@@ -16,12 +16,15 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
 
             $('#my_support_submit').click( function() {
                 data = {
-                    "class":  "Koha::Plugin::Com::ByWaterSolutions::MySupport", 
-                    "method": "tool",
-                    "sub":    "process_support_request",
-                    "url":    document.URL,
-                    "email":  $("#my_support_email").val(),
-                    "name":   $("#my_support_name").val(),
+                    "class":      "Koha::Plugin::Com::ByWaterSolutions::MySupport", 
+                    "method":     "tool",
+                    "sub":        "process_support_request",
+                    "url":        document.URL,
+                    "email":      $("#my_support_email").val(),
+                    "name":       $("#my_support_name").val(),
+                    "branchname": $("#logged-in-branch-name").html(),
+                    "branchcode": $("#logged-in-branch-code").html(),
+                    "username":   $(".loggedinusername").html(),
                 };
 
                 $.ajax({ 

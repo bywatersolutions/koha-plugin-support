@@ -88,10 +88,16 @@ sub process_support_request {
 
     my $email_from = $cgi->param('email');
     my $url        = $cgi->param('url');
-    my $name = $cgi->param('name');
+    my $name       = $cgi->param('name');
+    my $branchname = $cgi->param('branchname');
+    my $branchcode = $cgi->param('branchcode');
+    my $username   = $cgi->param('username');
 
     my $message = "FROM: $name\n";
     $message .= "URL: $url\n";
+    $message .= "BRANCH NAME: $branchname\n";
+    $message .= "BRANCHCODE: $branchcode\n";
+    $message .= "USERNAME: $username\n";
 
     my %mail = (
         'To'       => $email_to,
