@@ -25,7 +25,10 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
                     "branchname": $("#logged-in-branch-name").html(),
                     "branchcode": $("#logged-in-branch-code").html(),
                     "username":   $(".loggedinusername").html(),
+                    "borrower":   borrowernumber
                 };
+
+                console.log( "Data: ", data );
 
                 $.ajax({ 
                     type: "POST",

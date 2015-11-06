@@ -2,6 +2,7 @@ package Koha::Plugin::Com::ByWaterSolutions::MySupport;
 
 ## It's good practive to use Modern::Perl
 use Modern::Perl;
+use CGI::Carp qw(fatalsToBrowser);
 
 ## Required for all plugins
 use base qw(Koha::Plugins::Base);
@@ -12,6 +13,7 @@ use C4::Branch;
 use C4::Members;
 use C4::Auth;
 
+use YAML;
 use JSON qw(to_json);
 use Mail::Sendmail;
 
@@ -25,7 +27,7 @@ our $metadata = {
     description =>
       'This plugin automatically generates support emails with useful data.',
     date_authored   => '2014-05-05',
-    date_updated    => '2014-05-05',
+    date_updated    => '2015-11-06',
     minimum_version => '3.14',
     maximum_version => undef,
     version         => $VERSION,
@@ -92,12 +94,19 @@ sub process_support_request {
     my $branchname = $cgi->param('branchname');
     my $branchcode = $cgi->param('branchcode');
     my $username   = $cgi->param('username');
+    my $borrower   = $cgi->param('borrower');
 
     my $message = "FROM: $name\n";
     $message .= "URL: $url\n";
     $message .= "BRANCH NAME: $branchname\n";
     $message .= "BRANCHCODE: $branchcode\n";
     $message .= "USERNAME: $username\n";
+    if ( $borrower ) {
+        my $issues = _getIssues( $borrower );
+        $message .= "\n";
+        $message .= "BORROWER NUMBER: $borrower\n";
+        $message .= "CHECK OUTS:\n$issues\n";
+    }
 
     my %mail = (
         'To'       => $email_to,
@@ -114,6 +123,12 @@ sub process_support_request {
 
     print $cgi->header('application/json');
     print to_json($r);
+}
+
+sub _getIssues {
+    my $biblionumber = shift;
+    my $items = C4::Circulation::GetIssues( { biblionumber => $biblionumber } );
+    return YAML::Dump $items;
 }
 
 ## If your tool is complicated enough to needs it's own setting/configuration
