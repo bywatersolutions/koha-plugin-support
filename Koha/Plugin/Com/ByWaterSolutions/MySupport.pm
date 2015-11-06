@@ -87,32 +87,22 @@ sub process_support_request {
     my $email_to = $self->retrieve_data('email_address');
 
     my $cgi = $self->{'cgi'};
+    my $params = $cgi->Vars;
 
-    my $email_from = $cgi->param('email');
-    my $url        = $cgi->param('url');
-    my $name       = $cgi->param('name');
-    my $branchname = $cgi->param('branchname');
-    my $branchcode = $cgi->param('branchcode');
-    my $username   = $cgi->param('username');
     my $borrower   = $cgi->param('borrower');
 
-    my $message = "FROM: $name\n";
-    $message .= "URL: $url\n";
-    $message .= "BRANCH NAME: $branchname\n";
-    $message .= "BRANCHCODE: $branchcode\n";
-    $message .= "USERNAME: $username\n";
+    my $data = [];
+    push ( @$data, { page_data => $params } );
     if ( $borrower ) {
-        my $issues = _getIssues( $borrower );
-        $message .= "\n";
-        $message .= "BORROWER NUMBER: $borrower\n";
-        $message .= "CHECK OUTS:\n$issues\n";
+        my $issues = C4::Circulation::GetIssues( { borrowrenumber => $borrower } );
+        push ( @$data, { issues => $issues } );
     }
 
     my %mail = (
         'To'       => $email_to,
-        'From'     => $email_from,
-        'Reply-To' => $email_from,
-        'Message'  => $message,
+        'From'     => $params->{email},
+        'Reply-To' => $params->{email},
+        'Message'  => YAML::Dump( $data ), 
     );
 
     sendmail(%mail);
