@@ -52,6 +52,9 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
 
 function support_data_submitted( data ) {
     if ( data.success ) {
+        // Can we get the support email?
+        // it would be nice to say
+        // "Support request submitted to ..."
         alert("Support request submitted!");
     } else if ( data.error ) {
         alert("ERROR: " + data.error );

@@ -92,11 +92,19 @@ sub process_support_request {
 
     push ( @$data, { sysprefs => _getSysprefs() } );
 
+    _sendEmail( to => $email_to, from => $params->{email}, message => YAML::Dump( $data ), attachments => [], cgi => $cgi );
+}
+
+sub _sendEmail {
+    my %args = ( @_ );
+
+    my $cgi = $args{cgi};
+
     my %mail = (
-        'To'       => $email_to,
-        'From'     => $params->{email},
-        'Reply-To' => $params->{email},
-        'Message'  => YAML::Dump( $data ), 
+        'To'       => $args{to},
+        'From'     => $args{from},
+        'Reply-To' => $args{from},
+        'Message'  => $args{message}, 
     );
 
     sendmail(%mail);
@@ -107,6 +115,7 @@ sub process_support_request {
 
     print $cgi->header('application/json');
     print to_json($r);
+
 }
 
 # TODO: allow searches to be passed in.
