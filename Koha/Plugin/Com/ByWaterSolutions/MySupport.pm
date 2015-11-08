@@ -90,16 +90,7 @@ sub process_support_request {
         push ( @$data, { issues => $issues } );
     }
 
-    my $schema  = Koha::Database->new()->schema();
-    my $rs = $schema->resultset('Systempreference')->search( undef, { columns => [ qw( variable value ) ] });
-    my @sysprefs;
-    $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
-    for my $row ( $rs->all ) {
-        push ( @sysprefs, $row );
-    }
-    
-
-    push ( @$data, { sysprefs => \@sysprefs } );
+    push ( @$data, { sysprefs => _getSysprefs() } );
 
     my %mail = (
         'To'       => $email_to,
@@ -118,10 +109,16 @@ sub process_support_request {
     print to_json($r);
 }
 
-sub _getIssues {
-    my $biblionumber = shift;
-    my $items = C4::Circulation::GetIssues( { biblionumber => $biblionumber } );
-    return YAML::Dump $items;
+# TODO: allow searches to be passed in.
+sub _getSysprefs {
+    my $schema  = Koha::Database->new()->schema();
+    my $rs = $schema->resultset('Systempreference')->search( undef, { columns => [ qw( variable value ) ] });
+    my @sysprefs;
+    $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
+    for my $row ( $rs->all ) {
+        push ( @sysprefs, $row );
+    }
+    return \@sysprefs;
 }
 
 ## If your tool is complicated enough to needs it's own setting/configuration
