@@ -15,6 +15,8 @@ use C4::Auth;
 
 use YAML;
 use JSON qw(to_json);
+use MIME::QuotedPrint;
+use MIME::Base64;
 use Mail::Sendmail;
 
 ## Here we set our plugin version
@@ -81,6 +83,9 @@ sub tool {
 
 }
 
+# TODO: This function needs to be smarter -- It's trying to do too much, and needs to delagate more.
+# TODO: html and system preferences should be added as attachments to email, not in the body.
+#       see http://alma.ch/perl/Mail-Sendmail-FAQ.html#attachments
 sub process_support_request {
     my ( $self, $args ) = @_;
 
@@ -88,7 +93,9 @@ sub process_support_request {
 
     my $cgi = $self->{'cgi'};
     my $params = $cgi->Vars;
-
+    my $html = $params->{html};
+    $html =~ s/[^\x00-\x7f]//g; # strip wide characters.
+    $params->{html} = '';
     my $borrower   = $cgi->param('borrower');
 
     my $data = [];
