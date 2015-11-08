@@ -15,17 +15,23 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
             });
 
             $('#my_support_submit').click( function() {
+                if (typeof borrowernumber != 'undefined') {
+                    borrower = borrowernumber;
+                } else {
+                    borrower = '';
+                }
                 data = {
-                    "class":      "Koha::Plugin::Com::ByWaterSolutions::MySupport", 
-                    "method":     "tool",
-                    "sub":        "process_support_request",
-                    "url":        document.URL,
-                    "email":      $("#my_support_email").val(),
-                    "name":       $("#my_support_name").val(),
-                    "branchname": $("#logged-in-branch-name").html(),
-                    "branchcode": $("#logged-in-branch-code").html(),
-                    "username":   $(".loggedinusername").html(),
-                    "borrower":   borrowernumber
+                    "class":       "Koha::Plugin::Com::ByWaterSolutions::MySupport", 
+                    "method":      "tool",
+                    "sub":         "process_support_request",
+                    "url":         document.URL,
+                    "email":       $("#my_support_email").val(),
+                    "name":        $("#my_support_name").val(),
+                    "description": $("#my_support_description").val(),
+                    "branchname":  $("#logged-in-branch-name").html(),
+                    "branchcode":  $("#logged-in-branch-code").html(),
+                    "username":    $(".loggedinusername").html(),
+                    "borrower":    borrower
                 };
 
                 console.log( "Data: ", data );

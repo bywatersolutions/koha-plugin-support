@@ -92,11 +92,24 @@ sub process_support_request {
     my $borrower   = $cgi->param('borrower');
 
     my $data = [];
+
     push ( @$data, { page_data => $params } );
+
     if ( $borrower ) {
         my $issues = C4::Circulation::GetIssues( { borrowrenumber => $borrower } );
         push ( @$data, { issues => $issues } );
     }
+
+    my $schema  = Koha::Database->new()->schema();
+    my $rs = $schema->resultset('Systempreference')->search( undef, { columns => [ qw( variable value ) ] });
+    my @sysprefs;
+    $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
+    for my $row ( $rs->all ) {
+        push ( @sysprefs, $row );
+    }
+    
+
+    push ( @$data, { sysprefs => \@sysprefs } );
 
     my %mail = (
         'To'       => $email_to,
