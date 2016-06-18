@@ -12,6 +12,7 @@ use C4::Context;
 use C4::Branch;
 use C4::Members;
 use C4::Auth;
+use Koha::Database;
 
 use YAML;
 use JSON qw(to_json);
@@ -20,16 +21,16 @@ use MIME::Base64;
 use Mail::Sendmail;
 
 ## Here we set our plugin version
-our $VERSION = 1.01;
+our $VERSION = 1.02;
 
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
     name   => 'ByWater Solutions Support Plugin',
-    author => 'Kyle M Hall',
+    author => 'Barton Chittenden',
     description =>
       'This plugin automatically generates support emails with useful data.',
     date_authored   => '2014-05-05',
-    date_updated    => '2015-11-06',
+    date_updated    => '2016-06-19',
     minimum_version => '3.14',
     maximum_version => undef,
     version         => $VERSION,
@@ -59,11 +60,52 @@ sub tool {
     my ( $self, $args ) = @_;
 
     my $cgi = $self->{'cgi'};
+    my $handler = $cgi->param('sub');
 
+
+    # I would really like to do this with coderefs.
+    # see http://www.perlmonks.org/?node_id=62737
     if ( $cgi->param('sub') eq 'process_support_request' ) {
         $self->process_support_request();
+    } elsif ( $cgi->param('sub') eq 'get_initial_data' ) {
+        $self->get_initial_data();
+    } elsif ( $cgi->param('sub') eq 'get_initial_data_part2' ) {
+        $self->get_initial_data_part2();
     }
 
+}
+
+# use _getLoggedInUser $username to grab email, firstname, surname.
+
+sub get_initial_data {
+    my ( $self, $args ) = @_;
+
+    my $cgi = $self->{'cgi'};
+    my $params = $cgi->Vars;
+    my $logged_in_user   =  _getLoggedInUser( $params->{username} ) ;
+
+    my $r;
+    $r->{success} = 1;
+    $r->{user} = $logged_in_user;
+    $r->{username} = $params->{username};
+
+    print $cgi->header('application/json');
+    print to_json($r);
+}
+
+sub get_initial_data_part2 {
+    my ( $self, $args ) = @_;
+
+    my $cgi = $self->{'cgi'};
+    my $params = $cgi->Vars;
+
+    # TODO: Get category.
+
+    my $r;
+    $r->{success} = 1;
+
+    print $cgi->header('application/json');
+    print to_json($r);
 }
 
 # TODO: This function needs to be smarter -- It's trying to do too much, and needs to delagate more.
@@ -112,10 +154,23 @@ sub _sendEmail {
     my $r;
     $r->{error} = $Mail::Sendmail::error;
     $r->{success} = $Mail::Sendmail::error ? 0 : 1;
+    $r->{mailto} = $args{to};
 
     print $cgi->header('application/json');
     print to_json($r);
 
+}
+
+sub _getLoggedInUser {
+    my $username = shift;
+    my $schema  = Koha::Database->new()->schema();
+    my $rs = $schema->resultset('Borrower')->search( { userid => $username }, { columns => [ qw( email firstname surname ) ] } );
+    my $user;
+    $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
+    for my $row ( $rs->all ) {
+        $user = $row;
+    }
+    return $user;
 }
 
 # TODO: allow searches to be passed in.

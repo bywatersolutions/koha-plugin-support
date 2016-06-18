@@ -19,8 +19,42 @@
     box-shadow: inset 0 0 5px 5px #222;
 }
 
+#pageslide > form > fieldset {
+    width: 100%;
+    padding: 5%;
+}
+
 #my_support_link {
     position: fixed !important;
     right: 0 !important;
     bottom: 0 !important;
+}
+
+/*
+#startpage {
+    visibility: hidden;
+}
+*/
+
+div.oneline {
+    bottom-margin: 1em;
+    width: 100%;
+    height: 2em;
+}
+
+div.oneline > label {
+    float: left;
+    width: 20%; 
+    padding: 0.1em;
+    border 3px solid red;
+}
+
+div.oneline > input {
+    float: right;
+    width: 70%;
+    margin: 0;
+}
+
+div.reset {
+    clear: both;
 }
