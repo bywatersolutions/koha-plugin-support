@@ -1,6 +1,6 @@
 # Extending the support plugin.
 
-If you want to create a new support plugin page, you will need to edit three files: MySupport/my_support.js, MySupport/my_support.html and MySupport.pl.
+If you want to create a new support plugin section, you will need to edit three files: `MySupport/my_support.js`, `MySupport/my_support.html` and `MySupport.pl`.
 
 * `MySupport/my_support.js`
     * Populate the variable `payload`
