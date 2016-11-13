@@ -28,7 +28,10 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
                 $.pageslide({ href: '#modal', direction: "left", modal: true });
                 $('#my_support_link').hide();
 
-                payload = { "username":    $(".loggedinusername").html(), };
+                payload = {
+                    "username":    $(".loggedinusername").html(), 
+                    "url":         document.URL,
+                };
 
                 support_submit( payload, "get_initial_data", initial_data );
             });
@@ -90,6 +93,8 @@ function initial_data ( data ) {
     $('#startpage').show();
     $('#my_support_name').val(data.username);
     $('#my_support_email').val(data.user.email);
+    $('#category').html(data.category);
+    $('#page').html(data.page);
     console.log( 'initial_data() data.success : ' + data.success );
     console.log( 'initial_data() data.user.firstname : ' + data.user.firstname );
     console.log( 'initial_data() data.username : ' + data.username );

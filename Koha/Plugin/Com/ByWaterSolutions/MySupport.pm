@@ -83,11 +83,14 @@ sub get_initial_data {
     my $cgi = $self->{'cgi'};
     my $params = $cgi->Vars;
     my $logged_in_user   =  _getLoggedInUser( $params->{username} ) ;
+    my ( $category, $page ) = _getInitialCategory( $params->{url} );
 
     my $r;
     $r->{success} = 1;
     $r->{user} = $logged_in_user;
     $r->{username} = $params->{username};
+    $r->{category} = $category;
+    $r->{page} = $page;
 
     print $cgi->header('application/json');
     print to_json($r);
@@ -171,6 +174,45 @@ sub _getLoggedInUser {
         $user = $row;
     }
     return $user;
+}
+
+sub _getInitialCategory {
+    my $url = shift;
+    my @url_parts = split( '/', $url );
+
+    my @category_list = (
+        circ => 'Circulation',
+        acqui => 'Acquisitions',
+        admin => 'Administration',
+        authorities => 'Authorities',
+        basket => 'Cart',
+        catalogue => 'Bibs_and_Items',
+        cataloguing => 'Cataloguing',
+        value_builder => 'Cataloguing',
+        course_reserves => 'Course_Reserves',
+        labels => 'Label_Creator',
+        members => 'Patrons',
+        offline_circ => 'Offline_Circ',
+        patron_lists => 'Patron_Lists',
+        patroncard => 'Patron_Card_Creator',
+        plugins => 'Plugins',
+        reports => 'Reports',
+        reserve => 'Holds',
+        rotating_collections => 'Rotating_Collections',
+        serials => 'Serials',
+        tags => 'Tags',
+        tools => 'Tools',
+        virtualshelves => 'Lists',
+        koha => 'General',
+    );
+
+    my %inverted_category_hash = reverse @category_list;
+    my $categories = [ keys %inverted_category_hash ];
+    my $real_category = { @category_list };
+    my $category = $real_category->{$url_parts[-2]};
+    my $page = $url_parts[-2] . '/' . $url_parts[-1];
+#my $page =~ s/#.*//;
+    return ( $category, $page );
 }
 
 # TODO: allow searches to be passed in.
