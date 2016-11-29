@@ -98,6 +98,18 @@ function initial_data ( data ) {
     console.log( 'initial_data() data.success : ' + data.success );
     console.log( 'initial_data() data.user.firstname : ' + data.user.firstname );
     console.log( 'initial_data() data.username : ' + data.username );
+    console.log( 'initial_data() data.debug : ' + data.debug );
+    $('#support_category').append(
+        '<option value="' 
+        + data.category_data.selected_category + '">' 
+        + data.category_data.selected_category + '</option>'
+    );
+    for( i=0; i<data.category_data.category_list.length; ++i ) {
+        $('#support_category').append(
+            '<option value="' + data.category_data.category_list[i] + '">' 
+            + data.category_data.category_list[i] + '</option>'
+        );
+    }
 }
 
 function final_data ( data ) {

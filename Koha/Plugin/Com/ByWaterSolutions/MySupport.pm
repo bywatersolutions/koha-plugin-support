@@ -24,6 +24,9 @@ use List::MoreUtils qw(uniq);
 ## Here we set our plugin version
 our $VERSION = 1.02;
 
+## TODO: Need to write perl docs. This should probably be used to generate MySupport.md.
+
+
 ## Here is our metadata, some keys are required, some are optional
 our $metadata = {
     name   => 'ByWater Solutions Support Plugin',
@@ -85,14 +88,15 @@ sub get_initial_data {
     my $cgi = $self->{'cgi'};
     my $params = $cgi->Vars;
     my $logged_in_user   =  _getLoggedInUser( $params->{username} ) ;
-    my ( $category, $page ) = _getInitialCategory( $params->{url} );
+    my ( $category_data, $page ) = _getInitialCategory( $params->{url} );
 
     my $r;
     $r->{success} = 1;
     $r->{user} = $logged_in_user;
     $r->{username} = $params->{username};
-    $r->{category} = $category;
+    $r->{category_data} = $category_data;
     $r->{page} = $page;
+    $r->{debug} = YAML::Dump( to_json($category_data) );
 
     print $cgi->header('application/json');
     print to_json($r);
@@ -178,6 +182,11 @@ sub _getLoggedInUser {
     return $user;
 }
 
+
+# TODO: I'd like to move @broad_category_mapping and @narrow_category_mapping into a .json file, probably
+# including the Koha version, allowing for easy expansion. The .json file could be hosted locally or
+# in, say, a gitub repo.
+
 sub _getInitialCategory {
     my $url = shift;
     my @url_parts = split( '/', $url );
@@ -232,9 +241,12 @@ sub _getInitialCategory {
     my $category = ( defined $narrow_category->{$page} ) 
         ? $narrow_category->{$page}
         : $broad_category->{$url_parts[-2]};
-
+    my $category_data = {
+        selected_category => $category,
+        category_list => $categories
+    };
 #my $page =~ s/#.*//;
-    return ( $category, $page );
+    return ( $category_data, $page );
 }
 
 # TODO: allow searches to be passed in.
