@@ -19,6 +19,7 @@ use JSON qw(to_json);
 use MIME::QuotedPrint;
 use MIME::Base64;
 use Mail::Sendmail;
+use List::MoreUtils qw(uniq);
 
 ## Here we set our plugin version
 our $VERSION = 1.02;
@@ -35,6 +36,7 @@ our $metadata = {
     maximum_version => undef,
     version         => $VERSION,
 };
+
 
 ## This is the minimum code required for a plugin's 'new' method
 ## More can be added, but none should be removed
@@ -180,7 +182,7 @@ sub _getInitialCategory {
     my $url = shift;
     my @url_parts = split( '/', $url );
 
-    my @category_list = (
+    my @broad_category_mapping = (
         circ => 'Circulation',
         acqui => 'Acquisitions',
         admin => 'Administration',
@@ -206,11 +208,31 @@ sub _getInitialCategory {
         koha => 'General',
     );
 
-    my %inverted_category_hash = reverse @category_list;
+    my @narrow_category_mapping = (
+       'catalogue/search-history.pl' => 'Search',
+       'catalogue/itemsearch.pl' => 'Search',
+       'catalogue/search.pl' => 'Search',
+       'tools/overduerules.pl' => 'Notices',
+       'tools/letter.pl' => 'Notices',
+       'tools/quotes-upload.pl' => 'Quotes',
+       'tools/manage-marc-import.pl' => 'Import',
+       'tools/viewlog.pl' => 'Logs',
+       'tools/quotes.pl' => 'Quotes',
+       'tools/koha-news.pl' => 'News',
+       'tools/marc_modification_templates.pl' => 'Import',
+       'tools/stage-marc-import.pl' => 'Import',
+       'tools/showdiffmarc.pl' => 'Import',
+    );
+
+    my %inverted_category_hash = reverse ( @broad_category_mapping , @narrow_category_mapping );
     my $categories = [ keys %inverted_category_hash ];
-    my $real_category = { @category_list };
-    my $category = $real_category->{$url_parts[-2]};
+    my $broad_category = { @broad_category_mapping };
+    my $narrow_category = { @narrow_category_mapping };
     my $page = $url_parts[-2] . '/' . $url_parts[-1];
+    my $category = ( defined $narrow_category->{$page} ) 
+        ? $narrow_category->{$page}
+        : $broad_category->{$url_parts[-2]};
+
 #my $page =~ s/#.*//;
     return ( $category, $page );
 }
