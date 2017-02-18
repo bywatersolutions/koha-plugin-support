@@ -27,3 +27,15 @@ If `support_submit()` is called with `'bar'` as the perl subroutine, `bar()` mus
         print to_json($r);
     }
 
+TODO:
+
+Need to write helpers in Perl/Javascript to facilitate gathering support data:
+
+* Run queries
+* Pull data from HTML
+* Koha web service API calls?
+* Koha perl API
+    * Read from Koha-conf
+    * Pull sysprefs
+    * Pull zebra info?
+

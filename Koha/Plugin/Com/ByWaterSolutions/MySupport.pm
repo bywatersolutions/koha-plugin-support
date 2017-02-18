@@ -76,6 +76,10 @@ sub tool {
         $self->get_initial_data();
     } elsif ( $cgi->param('sub') eq 'get_initial_data_part2' ) {
         $self->get_initial_data_part2();
+    } elsif ( $cgi->param('sub') eq 'circulation' ) {
+        $self->circulation();
+    } elsif ( $cgi->param('sub') eq 'passthrough' ) {
+        $self->passthrough();
     }
 
 }
@@ -115,6 +119,22 @@ sub get_initial_data_part2 {
 
     print $cgi->header('application/json');
     print to_json($r);
+}
+
+sub passthrough {
+    my ( $self, $args ) = @_;
+
+    warn("In passthrough");
+    my $cgi = $self->{'cgi'};
+    my $params = $cgi->Vars;
+  
+    warn("about to set params->{success}");
+    $params->{success} = 1;
+
+    warn $cgi->header('application/json');
+    print $cgi->header('application/json');
+    warn to_json($params);
+    print to_json($params);
 }
 
 # TODO: This function needs to be smarter -- It's trying to do too much, and needs to delagate more.

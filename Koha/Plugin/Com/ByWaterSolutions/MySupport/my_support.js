@@ -18,6 +18,20 @@ function support_submit( data, sub, callback ) {
 
 }
 
+function category_dispatch( key ) {
+    var submittable = {
+        'Circulation' : {
+            'sub' : 'passthrough',
+            'callback' : circulation
+        }
+    }
+    if( key in submittable ) {
+        return submittable[key];
+    } else {
+        return { 'sub' : 'passthrough', 'callback' : 'final_data'  };
+    }
+}
+
 $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery.pageslide.min.js', function() {
     $.get("/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery.pageslide.css", function(css){
         $("<style></style>").appendTo("head").html(css);
@@ -61,7 +75,12 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
                     "html":        $('html')[0].outerHTML
                 }
 
-                support_submit( payload, "process_support_request", final_data );
+                console.log("Support catgory: ", $('#support_category').val() );
+                var dispatch = category_dispatch( $('#support_category').val() );
+                console.log( "Dispatch sub: ", dispatch.sub, " callback: ", dispatch.callback );
+                //support_submit( payload, "process_support_request", final_data );
+                support_submit( payload, dispatch.sub, dispatch.callback );
+
             });
 
             $('#my_support_submit').click( function() {
@@ -110,6 +129,14 @@ function initial_data ( data ) {
             + data.category_data.category_list[i] + '</option>'
         );
     }
+}
+
+function circulation ( data ) {
+    $('#circulation').show();
+    $('#circ_borrower').val(data.borrower);
+    console.log( 'circulation() data.success : ' + data.success );
+    console.log( 'circulation() data.borrower : ' + data.borrower );
+
 }
 
 function final_data ( data ) {
