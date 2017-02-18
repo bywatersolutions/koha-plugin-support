@@ -268,7 +268,7 @@ sub _getInitialCategory {
     );
 
     my %inverted_category_hash = reverse ( @broad_category_mapping , @narrow_category_mapping );
-    my $categories = [ keys %inverted_category_hash ];
+    my $categories = [ sort keys %inverted_category_hash ];
     my $broad_category = { @broad_category_mapping };
     my $narrow_category = { @narrow_category_mapping };
     my $page = $url_parts[-2] . '/' . $url_parts[-1];
