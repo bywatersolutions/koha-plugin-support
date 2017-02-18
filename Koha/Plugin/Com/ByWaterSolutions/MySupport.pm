@@ -235,6 +235,10 @@ sub _getInitialCategory {
         tools => 'Tools',
         virtualshelves => 'Lists',
         koha => 'General',
+        cronjobs => 'Cron_Jobs',
+        opac => 'OPAC',
+        sip2 => 'SIP2',
+        selfreg => 'Self_Registration',
     );
 
     my @narrow_category_mapping = (
@@ -251,6 +255,16 @@ sub _getInitialCategory {
        'tools/marc_modification_templates.pl' => 'Import',
        'tools/stage-marc-import.pl' => 'Import',
        'tools/showdiffmarc.pl' => 'Import',
+       'tools/batchMod.pl' => 'Batch_modification',
+       'tools/holidays.pl' => 'Calendar',
+       'members/boraccount.pl' => 'Fines',
+       'members/pay.pl' => 'Fines',
+       'members/maninvoice.pl' => 'Fines',
+       'members/mancredit.pl' => 'Fines',
+       'admin/biblio_framework.pl' => 'Frameworks',
+       'tools/viewlog.pl' => 'Logs',
+       'admin/z3950servers.pl' => 'z39.50',
+       'cataloguing/z3950_search.pl' => 'z39.50',
     );
 
     my %inverted_category_hash = reverse ( @broad_category_mapping , @narrow_category_mapping );
