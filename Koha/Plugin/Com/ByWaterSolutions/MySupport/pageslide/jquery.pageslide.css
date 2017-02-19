@@ -45,7 +45,7 @@ div.oneline {
 div.oneline > label {
     float: left;
     width: 20%; 
-    padding: 0.1em;
+    padding: 0.2em 0.1em 0.1em 0.1em;
     border 3px solid red;
 }
 
@@ -57,4 +57,8 @@ div.oneline > input {
 
 div.reset {
     clear: both;
+}
+
+div.reset > label {
+    padding: 0.2em 0.1em 0.1em 0.1em;
 }

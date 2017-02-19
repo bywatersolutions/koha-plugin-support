@@ -48,18 +48,99 @@
 
             <div class="reset">
             <label>Have you cleared your browser cache?</label>
-                <input id="browser_cache" name="browser_cache" type="checkbox"/>
+                <span><input id="browser_cache" name="browser_cache" type="radio" value="no" checked/>no</span>
+                <span><input id="browser_cache" name="browser_cache" type="radio" value="yes"/>yes</span>
             <p/>
             </div>
             
-            <div class="oneline">
-            <label>Subject</label>
-                <input id="email_subject" type="text"/>
-            <p/>
+            <div class="reset">
+                <p> <label>What did you expect to happen?</label> </p>
+                <p>(Paste in text from Koha documentation as support)</p>
+                <p> <textarea id="expected" type="text"></textarea> </p>
             </div>
 
-            <p> Please provide a detailed step by step description of your issue: </p>
-            <textarea id="my_support_description" type="text"></textarea>
+            <div class="reset">
+                <p> <label>What actually happened?</label> </p>
+                <p> <textarea id="actual" type="text"></textarea> </p>
+            </div>
+
+            <div class="reset">
+                <p> <label>Paste the text of any error message here:</label> </p>
+                <p> <textarea id="Errormessage" type="text"></textarea> </p>
+            </div>
+
+            <div class="reset">
+            <label>How often does the issue occur?</label>
+                <select id="how_often">
+                    <option value="unique" checked> This is new to us </option>
+                    <option value="constant"> Every time we try it </option>
+                    <option value="every_minute"> Every minute </option>
+                    <option value="half_hourly"> Every half hour </option>
+                    <option value="hourly"> Every hour </option>
+                    <option value="daily"> Every day </option>
+                    <option value="weekly"> Every week </option>
+                    <option value="biweekly"> Every two weeks </option>
+                    <option value="monthly"> Every month </option>
+                    <option value="six_months"> Every six months </option>
+                    <option value="yearly"> Once a year </option>
+                    <option value="several_years"> Less than once a year </option>
+                    <option value="random"> It's entirely random </option>
+               </select>
+            </div>
+
+            <div class="reset">
+            <label>When did the issue occur?</label>
+                <select id="when">
+                    <option value="just_now" checked> It just happened </option>
+                    <option value="last_hour"> Witin the last hour </option>
+                    <option value="today"> Within the last day </option>
+                    <option value="this_week"> This week </option>
+                    <option value="week_plus"> More than a week ago </option>
+               </select>
+            </div>
+
+            <!-- TODO: add a date/time picker -->
+
+            <div class="reset">
+                <p> <label>Has anything been recently added, edited or removed in Koha?</label> </p>
+                <p> <input id="recent_changes" type="checkbox" value="sysprefs"/>System preferences</p>
+                <p> <input id="recent_changes" type="checkbox" value="frameworks"/>Frameworks</p>
+                <p> <input id="recent_changes" type="checkbox" value="report_category"/>Report categories</p>
+                <p> <input id="recent_changes" type="checkbox" value="auth_val"/>Authorised values</p>
+                <p> <input id="recent_changes" type="checkbox" value="borrowers"/>Patrons</p>
+                <p> <input id="recent_changes" type="checkbox" value="branches"/>Branches</p>
+                <p> <input id="recent_changes" type="checkbox" value="bibs_removed"/>Titles/bibs</p>
+                <p> <input id="recent_changes" type="checkbox" value="items_removed"/>Items</p>
+            </div>
+
+            <div class="reset">
+                <p> <label>Explain any changes</label> </p>
+                <p> <textarea id="recent_change_description" type="text"></textarea> </p>
+            </div>
+
+            <div class="reset">
+                <p> <label>Any other changes?</label> </p>
+                <p> <textarea id="other_recent_changes" type="text"></textarea> </p>
+            </div>
+
+            <div class="reset">
+                <p> <label>Explain, step by step, how to re-create the issue.</label> </p>
+                <p> Paste in the URL of the page you start on. Describe every step
+                    you take including text entry, and what you click on the page. 
+                    Any time you navigate to a new page, paste in the URL of that page. 
+                 <textarea id="steps_to_re_create" type="text"></textarea> </p>
+            </div>
+
+            <div class="reset">
+                <p> <label>Have you tried to re-create the issue in another web browser?</label> </p>
+                <span><input id="tried_other_browser" name="tried_other_browser" type="radio" value="no" checked/>no</span>
+                <span><input id="tried_other_browser" name="tried_other_browser" type="radio" value="yes"/>yes</span>
+            </div>
+
+            <div class="reset">
+                <p> <label>Support email Subject</label></p>
+                <p> <input id="email_subject" type="text"/> </p>
+            </div>
 
             <p> <a id="my_support_submit" href="#" class="btn">Submit</a> </p>
 
