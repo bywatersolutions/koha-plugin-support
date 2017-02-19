@@ -3,14 +3,12 @@
         <fieldset id="startpage" class="support">
             <legend>My support</legend>
 
-            <!-- TODO: Populate with logged in user's name -->
             <div class="oneline">
             <label>Name</label>
                 <input id="my_support_name" type="text"/>
             <p/>
             </div>
 
-            <!-- TODO: Populate with logged in user's email -->
             <div class="oneline">
             <label>Email</label>
                 <input id="my_support_email" type="text"/>
@@ -48,8 +46,19 @@
         </fieldset>
         <fieldset id="finalpage" class="support">
 
-            <p> Please provide a detailed step by step description of your issue: </p>
+            <div class="reset">
+            <label>Have you cleared your browser cache?</label>
+                <input id="browser_cache" name="browser_cache" type="checkbox"/>
+            <p/>
+            </div>
+            
+            <div class="oneline">
+            <label>Subject</label>
+                <input id="email_subject" type="text"/>
+            <p/>
+            </div>
 
+            <p> Please provide a detailed step by step description of your issue: </p>
             <textarea id="my_support_description" type="text"></textarea>
 
             <p> <a id="my_support_submit" href="#" class="btn">Submit</a> </p>

@@ -275,6 +275,7 @@ sub _getInitialCategory {
     my $category = ( defined $narrow_category->{$page} ) 
         ? $narrow_category->{$page}
         : $broad_category->{$url_parts[-2]};
+    $category //= 'General';
     my $category_data = {
         selected_category => $category,
         category_list => $categories

@@ -28,7 +28,7 @@ function category_dispatch( key ) {
     if( key in submittable ) {
         return submittable[key];
     } else {
-        return { 'sub' : 'passthrough', 'callback' : 'final_data'  };
+        return { 'sub' : 'passthrough', 'callback' : final_data  };
     }
 }
 
@@ -141,5 +141,5 @@ function circulation ( data ) {
 
 function final_data ( data ) {
     $('#finalpage').show();
+    console.log( 'circulation() data.success : ' + data.success );
 }
-
