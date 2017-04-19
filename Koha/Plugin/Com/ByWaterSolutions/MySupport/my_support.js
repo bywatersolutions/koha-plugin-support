@@ -95,8 +95,21 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
                 payload.recent_changes = $("recent_changes").val();
                 payload.recent_change_description = $("recent_change_description").val();
                 payload.other_recent_changes = $("other_recent_changes").val();
-                support_submit( payload, "passthrough", process_basic_info_finish );
+                support_submit( payload, "passthrough", basic_info_changes );
             });
+            $('#my_support_basic_info_changes_submit').click( function() {
+                payload.recent_changes = $("recent_changes").val();
+                payload.recent_change_description = $("recent_change_description").val();
+                payload.other_recent_changes = $("other_recent_changes").val();
+                support_submit( payload, "passthrough", basic_info_finish );
+            });
+            $('#my_support_submit_email').click( function() {
+                payload.steps_to_re_create = $("#steps_to_re_create").val(),
+                payload.tried_other_browser = $("#tried_other_browser").val(),
+                payload.email_subject = $("#email_subject").val()
+
+                support_submit( payload, "process_support_request", support_data_submitted );
+            })
             $('#my_support_submit').click( function() {
                 if (typeof borrowernumber != 'undefined') {
                     borrower = borrowernumber;
@@ -164,5 +177,9 @@ function basic_info_when() {
 
 function basic_info_changes() {
     $('#basic_info_changes').show();
+}
+
+function basic_info_finish() {
+    $('#basic_info_finish').show();
 }
 
