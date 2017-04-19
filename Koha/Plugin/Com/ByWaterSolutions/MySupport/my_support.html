@@ -4,21 +4,21 @@
             <legend>My support</legend>
 
             <div class="oneline">
-            <label>Name</label>
+                <label>Name</label>
                 <input id="my_support_name" type="text"/>
-            <p/>
+                <p/>
             </div>
 
             <div class="oneline">
-            <label>Email</label>
+                <label>Email</label>
                 <input id="my_support_email" type="text"/>
-            <p/>
+                <p/>
             </div>
 
-            <div class="reset"></div>
-            <label> Category </label> <p/>
-            <select id="support_category"> 
-            </select>
+            <div class="reset">
+                <label> Category </label> <p/>
+                <select id="support_category"> </select>
+            </div>
 
             <p> <a id="my_support_startpage_submit" href="#" class="btn">Next</a> </p>
 
@@ -27,15 +27,15 @@
             <legend>Circulation</legend>
 
             <div class="oneline">
-            <label>Borrower</label>
+                <label>Borrower</label>
                 <input id="circ_borrower" type="text"/>
-            <p/>
+                <p/>
             </div>
 
             <div class="oneline">
-            <label>Barcode</label>
-                <input id="circ_borrower" type="text"/>
-            <p/>
+                <label>Barcode</label>
+                <input id="circ_barcode" type="text"/>
+                <p/>
             </div>
 
             <label>Additional information</label>
@@ -44,13 +44,13 @@
             <p> <a id="circ_submit" href="#" class="btn">Next</a> </p>
 
         </fieldset>
-        <fieldset id="finalpage" class="support">
+        <fieldset id="basic_info" class="support">
 
             <div class="reset">
-            <label>Have you cleared your browser cache?</label>
+                <label>Have you cleared your browser cache?</label>
                 <span><input id="browser_cache" name="browser_cache" type="radio" value="no" checked/>no</span>
                 <span><input id="browser_cache" name="browser_cache" type="radio" value="yes"/>yes</span>
-            <p/>
+                <p/>
             </div>
             
             <div class="reset">
@@ -69,8 +69,11 @@
                 <p> <textarea id="Errormessage" type="text"></textarea> </p>
             </div>
 
+            <p> <a id="my_support_basic_info_submit" href="#" class="btn">Next</a> </p>
+        </fieldset>
+        <fieldset id="basic_info_when" class="support">
             <div class="reset">
-            <label>How often does the issue occur?</label>
+                <label>How often does the issue occur?</label>
                 <select id="how_often">
                     <option value="unique" checked> This is new to us </option>
                     <option value="constant"> Every time we try it </option>
@@ -89,7 +92,7 @@
             </div>
 
             <div class="reset">
-            <label>When did the issue occur?</label>
+                <label>When did the issue occur?</label>
                 <select id="when">
                     <option value="just_now" checked> It just happened </option>
                     <option value="last_hour"> Witin the last hour </option>
@@ -101,6 +104,9 @@
 
             <!-- TODO: add a date/time picker -->
 
+            <p> <a id="my_support_basic_info_when_submit" href="#" class="btn">Next</a> </p>
+        </fieldset>
+        <fieldset id="basic_info_changes" class="support">
             <div class="reset">
                 <p> <label>Has anything been recently added, edited or removed in Koha?</label> </p>
                 <p> <input id="recent_changes" type="checkbox" value="sysprefs"/>System preferences</p>
@@ -123,18 +129,24 @@
                 <p> <textarea id="other_recent_changes" type="text"></textarea> </p>
             </div>
 
+            <p> <a id="my_support_basic_info_changes_submit" href="#" class="btn">Next</a> </p>
+        </fieldset>
+        <fieldset id="basic_info_finish" class="support">
             <div class="reset">
                 <p> <label>Explain, step by step, how to re-create the issue.</label> </p>
                 <p> Paste in the URL of the page you start on. Describe every step
                     you take including text entry, and what you click on the page. 
-                    Any time you navigate to a new page, paste in the URL of that page. 
-                 <textarea id="steps_to_re_create" type="text"></textarea> </p>
+                    Any time you navigate to a new page, paste in the URL of that page.</p> 
+                <p> <textarea id="steps_to_re_create" type="text"></textarea> </p>
             </div>
 
             <div class="reset">
                 <p> <label>Have you tried to re-create the issue in another web browser?</label> </p>
-                <span><input id="tried_other_browser" name="tried_other_browser" type="radio" value="no" checked/>no</span>
-                <span><input id="tried_other_browser" name="tried_other_browser" type="radio" value="yes"/>yes</span>
+                <span><input id="tried_other_browser" name="tried_other_browser" 
+                             type="radio" value="no" checked/>no</span>
+
+                <span><input id="tried_other_browser" name="tried_other_browser" 
+                             type="radio" value="yes"/>yes</span>
             </div>
 
             <div class="reset">
@@ -142,7 +154,7 @@
                 <p> <input id="email_subject" type="text"/> </p>
             </div>
 
-            <p> <a id="my_support_submit" href="#" class="btn">Submit</a> </p>
+            <p> <a id="my_support_submit_email" href="#" class="btn">Submit</a> </p>
 
         </fieldset>
     </form>

@@ -28,7 +28,7 @@ function category_dispatch( key ) {
     if( key in submittable ) {
         return submittable[key];
     } else {
-        return { 'sub' : 'passthrough', 'callback' : final_data  };
+        return { 'sub' : 'passthrough', 'callback' : basic_info  };
     }
 }
 
@@ -139,7 +139,11 @@ function circulation ( data ) {
 
 }
 
-function final_data ( data ) {
-    $('#finalpage').show();
+function basic_info ( data ) {
+    $('#basic_info').show();
     console.log( 'circulation() data.success : ' + data.success );
+}
+
+function basic_info_when() {
+    $('#basic_info_when').show();
 }
