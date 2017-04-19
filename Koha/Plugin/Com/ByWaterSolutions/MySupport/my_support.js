@@ -59,21 +59,10 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
 
             $('#my_support_basic_info_submit').click( process_basic_info );
 
-            $('#my_support_basic_info_when_submit').click( function() {
-                payload.recent_changes = $("recent_changes").val();
-                payload.recent_change_description = $("recent_change_description").val();
-                payload.other_recent_changes = $("other_recent_changes").val();
-                support_submit( payload, "passthrough", basic_info_changes );
-            });
-            $('#my_support_basic_info_changes_submit').click( process_basic_info_when );
+            $('#my_support_basic_info_when_submit').click( process_basic_info_when );
+            $('#my_support_basic_info_changes_submit').click( process_basic_info_changes );
 
-            $('#my_support_submit_email').click( function() {
-                payload.steps_to_re_create = $("#steps_to_re_create").val(),
-                payload.tried_other_browser = $("#tried_other_browser").val(),
-                payload.email_subject = $("#email_subject").val()
-
-                support_submit( payload, "process_support_request", support_data_submitted );
-            })
+            $('#my_support_submit_email').click( process_basic_info_finish )
             $('#my_support_submit').click( function() {
                 if (typeof borrowernumber != 'undefined') {
                     borrower = borrowernumber;
@@ -178,9 +167,24 @@ function basic_info_when() {
     $('#basic_info_when').show();
 }
 
+function process_basic_info_changes() {
+    payload.recent_changes = $("recent_changes").val();
+    payload.recent_change_description = $("recent_change_description").val();
+    payload.other_recent_changes = $("other_recent_changes").val();
+    support_submit( payload, "passthrough", basic_info_finish );
+}
+
 function basic_info_changes() {
     $('#basic_info_changes').show();
 }
+
+function process_basic_info_finish() {
+    payload.steps_to_re_create = $("#steps_to_re_create").val(),
+    payload.tried_other_browser = $("#tried_other_browser").val(),
+    payload.email_subject = $("#email_subject").val()
+
+    support_submit( payload, "process_support_request", support_data_submitted );
+};
 
 function basic_info_finish() {
     $('#basic_info_finish').show();
