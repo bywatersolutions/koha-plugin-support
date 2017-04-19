@@ -57,26 +57,16 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
 
             $('#my_support_startpage_submit').click( process_startpage );
 
-            $('#my_support_basic_info_submit').click( function() {
-                payload.browser_cache_cleared = $("browser_cache").val();
-                payload.expected_results = $("expected").val();
-                payload.actual_results = $("actual").val();
-                payload.Errormessage = $("Errormessage").val();
+            $('#my_support_basic_info_submit').click( process_basic_info );
 
-                support_submit( payload, "passthrough", basic_info_when );
-            });
             $('#my_support_basic_info_when_submit').click( function() {
                 payload.recent_changes = $("recent_changes").val();
                 payload.recent_change_description = $("recent_change_description").val();
                 payload.other_recent_changes = $("other_recent_changes").val();
                 support_submit( payload, "passthrough", basic_info_changes );
             });
-            $('#my_support_basic_info_changes_submit').click( function() {
-                payload.recent_changes = $("recent_changes").val();
-                payload.recent_change_description = $("recent_change_description").val();
-                payload.other_recent_changes = $("other_recent_changes").val();
-                support_submit( payload, "passthrough", basic_info_finish );
-            });
+            $('#my_support_basic_info_changes_submit').click( process_basic_info_when );
+
             $('#my_support_submit_email').click( function() {
                 payload.steps_to_re_create = $("#steps_to_re_create").val(),
                 payload.tried_other_browser = $("#tried_other_browser").val(),
@@ -163,9 +153,25 @@ function circulation ( data ) {
 
 }
 
+function process_basic_info() {
+    payload.browser_cache_cleared = $("browser_cache").val();
+    payload.expected_results = $("expected").val();
+    payload.actual_results = $("actual").val();
+    payload.Errormessage = $("Errormessage").val();
+
+    support_submit( payload, "passthrough", basic_info_when );
+}
+
 function basic_info ( data ) {
     $('#basic_info').show();
     console.log( 'circulation() data.success : ' + data.success );
+}
+
+function process_basic_info_when() {
+    payload.issue_frequency = $("how_often").val();
+    payload.issue_when = $("when").val();
+
+    support_submit( payload, "passthrough", basic_info_changes );
 }
 
 function basic_info_when() {
