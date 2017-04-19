@@ -83,6 +83,20 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
 
             });
 
+            $('#my_support_basic_info_submit').click( function() {
+                payload.browser_cache_cleared = $("browser_cache").val();
+                payload.expected_results = $("expected").val();
+                payload.actual_results = $("actual").val();
+                payload.Errormessage = $("Errormessage").val();
+
+                support_submit( payload, "passthrough", basic_info_when );
+            });
+            $('#my_support_basic_info_when_submit').click( function() {
+                payload.recent_changes = $("recent_changes").val();
+                payload.recent_change_description = $("recent_change_description").val();
+                payload.other_recent_changes = $("other_recent_changes").val();
+                support_submit( payload, "passthrough", process_basic_info_finish );
+            });
             $('#my_support_submit').click( function() {
                 if (typeof borrowernumber != 'undefined') {
                     borrower = borrowernumber;
@@ -147,3 +161,8 @@ function basic_info ( data ) {
 function basic_info_when() {
     $('#basic_info_when').show();
 }
+
+function basic_info_changes() {
+    $('#basic_info_changes').show();
+}
+
