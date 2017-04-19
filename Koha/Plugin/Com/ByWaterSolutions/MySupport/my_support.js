@@ -55,33 +55,7 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
                 $('#my_support_link').show();
             });
 
-            $('#my_support_startpage_submit').click( function() {
-                if (typeof borrowernumber != 'undefined') {
-                    borrower = borrowernumber;
-                } else {
-                    borrower = '';
-                }
-                payload = {
-                    "url":         document.URL,
-                    "referrer":    document.referrer,
-                    "email":       $("#my_support_email").val(),
-                    "name":        $("#my_support_name").val(),
-                    "currentpage": $("#my_support_relates_to_current_page").val(),
-                    "description": $("#my_support_description").val(),
-                    "branchname":  $("#logged-in-branch-name").html(),
-                    "branchcode":  $("#logged-in-branch-code").html(),
-                    "username":    $(".loggedinusername").html(),
-                    "borrower":    borrower,
-                    "html":        $('html')[0].outerHTML
-                }
-
-                console.log("Support catgory: ", $('#support_category').val() );
-                var dispatch = category_dispatch( $('#support_category').val() );
-                console.log( "Dispatch sub: ", dispatch.sub, " callback: ", dispatch.callback );
-                //support_submit( payload, "process_support_request", final_data );
-                support_submit( payload, dispatch.sub, dispatch.callback );
-
-            });
+            $('#my_support_startpage_submit').click( process_startpage );
 
             $('#my_support_basic_info_submit').click( function() {
                 payload.browser_cache_cleared = $("browser_cache").val();
@@ -156,6 +130,29 @@ function initial_data ( data ) {
             + data.category_data.category_list[i] + '</option>'
         );
     }
+}
+
+function process_startpage() {
+
+    var category = $("#support_category").val();
+
+    if (typeof borrowernumber != 'undefined') {
+        borrower = borrowernumber;
+    } else {
+        borrower = '';
+    }
+
+    payload.email    = $("#my_support_email").val();
+    payload.name     = $("#my_support_name").val();
+    payload.category = category;
+    payload.borrower = borrower;
+
+    console.log("Support catgory: " , category );
+
+    var dispatch = category_dispatch( category );
+    console.log( "Dispatch sub: ", dispatch.sub, " callback: ", dispatch.callback );
+    support_submit( payload, dispatch.sub, dispatch.callback );
+
 }
 
 function circulation ( data ) {
