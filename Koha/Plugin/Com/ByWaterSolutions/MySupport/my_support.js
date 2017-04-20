@@ -38,6 +38,7 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
         $.get("/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.html", function(html){
             $('body').append(html);
 
+            // Get User and document URL.
             $('#my_support_link').click( function() {
                 $.pageslide({ href: '#modal', direction: "left", modal: true });
                 $('#my_support_link').hide();
@@ -50,29 +51,29 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
                 support_submit( payload, "get_initial_data", initial_data );
             });
 
+
+            // Get Support Categories
+            $('#my_support_startpage_submit').click( process_startpage );
+
+            // Process Support Categories
+            $('#circ_submit').click( process_circulation );
+            
+            // End Support Category Processing
+
+            // Get basic information
+            $('#my_support_basic_info_submit').click( process_basic_info );
+
+            $('#my_support_basic_info_when_submit').click( process_basic_info_when );
+
+            $('#my_support_basic_info_changes_submit').click( process_basic_info_changes );
+
+            $('#my_support_submit_email').click( process_basic_info_finish )
+
             $('#my_support_cancel').click( function() {
                 $.pageslide.close();
                 $('#my_support_link').show();
             });
 
-            $('#my_support_startpage_submit').click( process_startpage );
-
-            $('#my_support_basic_info_submit').click( process_basic_info );
-
-            $('#my_support_basic_info_when_submit').click( process_basic_info_when );
-            $('#my_support_basic_info_changes_submit').click( process_basic_info_changes );
-
-            $('#my_support_submit_email').click( process_basic_info_finish )
-            $('#my_support_submit').click( function() {
-                if (typeof borrowernumber != 'undefined') {
-                    borrower = borrowernumber;
-                } else {
-                    borrower = '';
-                }
-                payload.description = $("#my_support_description").val();
-
-                support_submit( payload, "process_support_request", support_data_submitted );
-            });
         });
     });
 });
@@ -109,6 +110,7 @@ function initial_data ( data ) {
             + data.category_data.category_list[i] + '</option>'
         );
     }
+    payload = data;
 }
 
 function process_startpage() {
@@ -140,6 +142,16 @@ function circulation ( data ) {
     console.log( 'circulation() data.success : ' + data.success );
     console.log( 'circulation() data.borrower : ' + data.borrower );
 
+    payload = data;
+}
+
+function process_circulation() {
+
+    payload.cardnumber = $("circ_borrower").val();
+    payload.item_barcode = $("circ_barcode").val();
+    payload.circ_description = $("circ_description").val();
+
+    support_submit( payload, "passthrough", basic_info );
 }
 
 function process_basic_info() {
