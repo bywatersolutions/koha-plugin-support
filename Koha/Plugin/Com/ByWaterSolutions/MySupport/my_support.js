@@ -48,7 +48,9 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
                     "url":         document.URL,
                 };
 
-                support_submit( payload, "get_initial_data", initial_data );
+                support_submit( payload, "get_initial_data", show_startpage );
+                console.log( 'get_initiali_data payload: ' );
+                console.log( payload );
             });
 
 
@@ -73,7 +75,6 @@ $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery
                 $.pageslide.close();
                 $('#my_support_link').show();
             });
-
         });
     });
 });
@@ -89,16 +90,12 @@ function support_data_submitted( data ) {
     }
 }
 
-function initial_data ( data ) {
+function show_startpage ( data ) {
     $('#startpage').show();
-    $('#my_support_name').val(data.username);
-    $('#my_support_email').val(data.user.email);
+    $('#my_support_name').val(data.support_data.username);
+    $('#my_support_email').val(data.support_data.user.email);
     $('#category').html(data.category);
     $('#page').html(data.page);
-    console.log( 'initial_data() data.success : ' + data.success );
-    console.log( 'initial_data() data.user.firstname : ' + data.user.firstname );
-    console.log( 'initial_data() data.username : ' + data.username );
-    console.log( 'initial_data() data.debug : ' + data.debug );
     $('#support_category').append(
         '<option value="' 
         + data.category_data.selected_category + '">' 
@@ -111,6 +108,8 @@ function initial_data ( data ) {
         );
     }
     payload = data;
+    console.log( 'show_startpage() payload: ' );
+    console.log( payload );
 }
 
 function process_startpage() {
@@ -123,8 +122,9 @@ function process_startpage() {
         borrower = '';
     }
 
-    payload.email    = $("#my_support_email").val();
-    payload.name     = $("#my_support_name").val();
+    payload.support_data.user.email    = $("#my_support_email").val();
+    payload.support_data.user.username = $("#my_support_name").val();
+    payload.support_data.category = category;
     payload.category = category;
     payload.borrower = borrower;
 
@@ -132,6 +132,8 @@ function process_startpage() {
 
     var dispatch = category_dispatch( category );
     console.log( "Dispatch sub: ", dispatch.sub, " callback: ", dispatch.callback );
+    console.log( 'process_startpage() payload: ' );
+    console.log( payload );
     support_submit( payload, dispatch.sub, dispatch.callback );
 
 }
@@ -139,10 +141,10 @@ function process_startpage() {
 function circulation ( data ) {
     $('#circulation').show();
     $('#circ_borrower').val(data.borrower);
-    console.log( 'circulation() data.success : ' + data.success );
-    console.log( 'circulation() data.borrower : ' + data.borrower );
 
+    console.log( 'circulation() payload: ' );
     payload = data;
+    console.log( payload );
 }
 
 function process_circulation() {

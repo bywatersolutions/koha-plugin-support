@@ -96,8 +96,8 @@ sub get_initial_data {
 
     my $r;
     $r->{success} = 1;
-    $r->{user} = $logged_in_user;
-    $r->{username} = $params->{username};
+    $r->{support_data}->{user} = $logged_in_user;
+    $r->{support_data}->{username} = $params->{username};
     $r->{category_data} = $category_data;
     $r->{page} = $page;
     $r->{debug} = YAML::Dump( to_json($category_data) );
@@ -156,12 +156,14 @@ sub process_support_request {
 
     push ( @$data, { page_data => $params } );
 
+    # This should move to circulation.
     if ( $borrower ) {
         my $issues = C4::Circulation::GetIssues( { borrowrenumber => $borrower } );
         push ( @$data, { issues => $issues } );
     }
 
-    push ( @$data, { sysprefs => _getSysprefs() } );
+    # This is overkill, need to be more selective about which sysprefs to pull.
+    #push ( @$data, { sysprefs => _getSysprefs() } );
 
     _sendEmail( to => $email_to, from => $params->{email}, message => YAML::Dump( $data ), attachments => [], cgi => $cgi );
 }
