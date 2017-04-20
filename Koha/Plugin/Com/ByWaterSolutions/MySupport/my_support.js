@@ -28,7 +28,7 @@ function category_dispatch( key ) {
     if( key in submittable ) {
         return submittable[key];
     } else {
-        return { 'sub' : 'passthrough', 'callback' : basic_info  };
+        return { 'sub' : 'passthrough', 'callback' : show_basic_info  };
     }
 }
 
@@ -153,7 +153,7 @@ function process_circulation() {
     payload.item_barcode = $("circ_barcode").val();
     payload.circ_description = $("circ_description").val();
 
-    support_submit( payload, "passthrough", basic_info );
+    support_submit( payload, "passthrough", show_basic_info );
 }
 
 function process_basic_info() {
@@ -165,7 +165,7 @@ function process_basic_info() {
     support_submit( payload, "passthrough", basic_info_when );
 }
 
-function basic_info ( data ) {
+function show_basic_info ( data ) {
     $('#basic_info').show();
     console.log( 'circulation() data.success : ' + data.success );
 }

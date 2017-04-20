@@ -195,7 +195,7 @@ sub _sendEmail {
 sub _getLoggedInUser {
     my $username = shift;
     my $schema  = Koha::Database->new()->schema();
-    my $rs = $schema->resultset('Borrower')->search( { userid => $username }, { columns => [ qw( email firstname surname ) ] } );
+    my $rs = $schema->resultset('Borrower')->search( { userid => $username }, { columns => [ qw( email firstname surname userid cardnumber ) ] } );
     my $user;
     $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
     for my $row ( $rs->all ) {
