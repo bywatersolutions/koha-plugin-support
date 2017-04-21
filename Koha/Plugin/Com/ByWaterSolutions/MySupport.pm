@@ -20,6 +20,7 @@ use MIME::QuotedPrint;
 use MIME::Base64;
 use Mail::Sendmail;
 use List::MoreUtils qw(uniq);
+use Data::Dumper;
 
 ## Here we set our plugin version
 our $VERSION = 1.02;
@@ -135,6 +136,63 @@ sub passthrough {
     print $cgi->header('application/json');
     warn to_json($params);
     print to_json($params);
+}
+
+sub circulation {
+    my ( $self, $args ) = @_;
+
+    my $cgi = $self->{'cgi'};
+    my $params = $cgi->Vars;
+    # TODO: Need to validate borrower and circ history.
+    # $params->{cardnumber} is flat out wrong
+
+    my $r = $params;
+    my $circulation = {
+        borrower => undef,
+        circ_history => undef
+    };
+
+    warn "here's \$r:";
+    warn Dumper( $r );
+    warn "circulation: calling _get_borrower...";
+    $circulation->{borrower} = _get_borrower( $params->{borrower} );
+    warn "circulation: after _get_borrower, calling _get_circ_history...";
+    my $circ_history = _get_circ_history( $params->{borrower} );
+    warn Dumper( $circ_history );
+    warn $circ_history; 
+    $circulation->{circ_history} = $circ_history;
+    warn "circulation: after _get_circ_history.";
+
+    $r->{success} = 1;
+    $r->{support_data}->{circulation} = $circulation;
+    print $cgi->header('application/json');
+    print to_json($r);
+}
+
+sub _get_borrower {
+    my $borrowernumber = shift;
+    my $schema  = Koha::Database->new()->schema();
+    my $rs = $schema->resultset('Borrower')->search( { borrowernumber => $borrowernumber }, { columns => [ qw( email firstname surname userid cardnumber borrowernumber ) ] } );
+    my $user;
+    $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
+    for my $row ( $rs->all ) {
+        $user = $row;
+    }
+    return $user;
+}
+
+sub _get_circ_history {
+    my $borrowernumber = shift;
+
+    my $schema  = Koha::Database->new()->schema();
+    my @issues;
+
+    my $rs = $schema->resultset('Issue')->search( { borrowernumber => $borrowernumber }, { columns => [ qw( itemnumber date_due branchcode returndate timestamp issuedate ) ] } );
+    $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
+    for my $row ( $rs->all ) {
+        push @issues, $row;
+    }
+    return { issues =>  @issues } ;
 }
 
 # TODO: This function needs to be smarter -- It's trying to do too much, and needs to delagate more.

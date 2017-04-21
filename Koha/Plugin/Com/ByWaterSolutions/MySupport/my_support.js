@@ -6,6 +6,7 @@ function support_submit( data, sub, callback ) {
     data['class'] = "Koha::Plugin::Com::ByWaterSolutions::MySupport";
     data.method = "tool";
     data.sub = sub;
+    console.log( "Support submit: ");
     console.log( data );
 
     $.ajax({ 
@@ -21,8 +22,8 @@ function support_submit( data, sub, callback ) {
 function category_dispatch( key ) {
     var submittable = {
         'Circulation' : {
-            'sub' : 'passthrough',
-            'callback' : circulation
+            'sub' : 'circulation',
+            'callback' : show_circulation
         }
     }
     if( key in submittable ) {
@@ -119,6 +120,7 @@ function process_startpage() {
     if (typeof borrowernumber != 'undefined') {
         borrower = borrowernumber;
     } else {
+        console.log("borrowernumber is undefined")
         borrower = '';
     }
 
@@ -138,11 +140,11 @@ function process_startpage() {
 
 }
 
-function circulation ( data ) {
+function show_circulation ( data ) {
     $('#circulation').show();
     $('#circ_borrower').val(data.borrower);
 
-    console.log( 'circulation() payload: ' );
+    console.log( 'show_circulation() payload: ' );
     payload = data;
     console.log( payload );
 }
@@ -162,22 +164,23 @@ function process_basic_info() {
     payload.actual_results = $("actual").val();
     payload.Errormessage = $("Errormessage").val();
 
-    support_submit( payload, "passthrough", basic_info_when );
+    support_submit( payload, "passthrough", show_basic_info_when );
 }
 
 function show_basic_info ( data ) {
     $('#basic_info').show();
-    console.log( 'circulation() data.success : ' + data.success );
+    console.log( 'show_basic_info() data.success : ' + data.success );
+    payload = data;
 }
 
 function process_basic_info_when() {
     payload.issue_frequency = $("how_often").val();
     payload.issue_when = $("when").val();
 
-    support_submit( payload, "passthrough", basic_info_changes );
+    support_submit( payload, "passthrough", show_basic_info_changes );
 }
 
-function basic_info_when() {
+function show_basic_info_when() {
     $('#basic_info_when').show();
 }
 
@@ -185,10 +188,10 @@ function process_basic_info_changes() {
     payload.recent_changes = $("recent_changes").val();
     payload.recent_change_description = $("recent_change_description").val();
     payload.other_recent_changes = $("other_recent_changes").val();
-    support_submit( payload, "passthrough", basic_info_finish );
+    support_submit( payload, "passthrough", show_basic_info_finish );
 }
 
-function basic_info_changes() {
+function show_basic_info_changes() {
     $('#basic_info_changes').show();
 }
 
@@ -200,7 +203,7 @@ function process_basic_info_finish() {
     support_submit( payload, "process_support_request", support_data_submitted );
 };
 
-function basic_info_finish() {
+function show_basic_info_finish() {
     $('#basic_info_finish').show();
 }
 
