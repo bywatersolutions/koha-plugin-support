@@ -15,7 +15,7 @@ use C4::Auth;
 use Koha::Database;
 
 use YAML;
-use JSON qw(to_json);
+use JSON qw(to_json from_json);
 use MIME::QuotedPrint;
 use MIME::Base64;
 use Mail::Sendmail;
@@ -68,18 +68,17 @@ sub tool {
     my $cgi = $self->{'cgi'};
     my $handler = $cgi->param('sub');
 
-
     # I would really like to do this with coderefs.
     # see http://www.perlmonks.org/?node_id=62737
-    if ( $cgi->param('sub') eq 'process_support_request' ) {
+    if ( $handler eq 'process_support_request' ) {
         $self->process_support_request();
-    } elsif ( $cgi->param('sub') eq 'get_initial_data' ) {
+    } elsif ( $handler eq 'get_initial_data' ) {
         $self->get_initial_data();
-    } elsif ( $cgi->param('sub') eq 'get_initial_data_part2' ) {
+    } elsif ( $handler eq 'get_initial_data_part2' ) {
         $self->get_initial_data_part2();
-    } elsif ( $cgi->param('sub') eq 'circulation' ) {
+    } elsif ( $handler eq 'circulation' ) {
         $self->circulation();
-    } elsif ( $cgi->param('sub') eq 'passthrough' ) {
+    } elsif ( $handler eq 'passthrough' ) {
         $self->passthrough();
     }
 
@@ -90,19 +89,20 @@ sub tool {
 sub get_initial_data {
     my ( $self, $args ) = @_;
 
+# http://stackoverflow.com/questions/15899616/jquery-ajax-to-perl-json-module-decode-of-data
     my $cgi = $self->{'cgi'};
     my $params = $cgi->Vars;
-    my $logged_in_user   =  _getLoggedInUser( $params->{username} ) ;
-    my ( $category_data, $page ) = _getInitialCategory( $params->{url} );
+    my $r = from_json( $params->{userdata} );
+    my $logged_in_user   =  _getLoggedInUser( $r->{username} ) ;
+    my ( $category_data, $page ) = _getInitialCategory( $r->{url} );
 
-    my $r;
     $r->{success} = 1;
     $r->{support_data}->{user} = $logged_in_user;
-    $r->{support_data}->{username} = $params->{username};
+    $r->{support_data}->{username} = $r->{username};
     $r->{category_data} = $category_data;
     $r->{page} = $page;
-    $r->{debug} = YAML::Dump( to_json($category_data) );
 
+    warn( Dumper $r );
     print $cgi->header('application/json');
     print to_json($r);
 }
@@ -128,14 +128,14 @@ sub passthrough {
     warn("In passthrough");
     my $cgi = $self->{'cgi'};
     my $params = $cgi->Vars;
-  
-    warn("about to set params->{success}");
-    $params->{success} = 1;
+    my $r = from_json( $params->{userdata} );
 
-    warn $cgi->header('application/json');
+    warn("about to set params->{success}");
+    $r->{success} = 1;
+
     print $cgi->header('application/json');
-    warn to_json($params);
-    print to_json($params);
+    warn to_json($r);
+    print to_json($r);
 }
 
 sub circulation {
@@ -146,7 +146,7 @@ sub circulation {
     # TODO: Need to validate borrower and circ history.
     # $params->{cardnumber} is flat out wrong
 
-    my $r = $params;
+    my $r = from_json( $params->{userdata} );
     my $circulation = {
         borrower => undef,
         circ_history => undef
@@ -155,9 +155,9 @@ sub circulation {
     warn "here's \$r:";
     warn Dumper( $r );
     warn "circulation: calling _get_borrower...";
-    $circulation->{borrower} = _get_borrower( $params->{borrower} );
+    $circulation->{borrower} = _get_borrower( $r->{borrower} );
     warn "circulation: after _get_borrower, calling _get_circ_history...";
-    my $circ_history = _get_circ_history( $params->{borrower} );
+    my $circ_history = _get_circ_history( $r->{borrower} );
     warn Dumper( $circ_history );
     warn $circ_history; 
     $circulation->{circ_history} = $circ_history;

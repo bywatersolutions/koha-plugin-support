@@ -1,11 +1,14 @@
 var payload;
 
-function support_submit( data, sub, callback ) {
+console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 1");
+function support_submit( userdata, sub, callback ) {
     $('.support').hide();
 
+    var data = {};
     data['class'] = "Koha::Plugin::Com::ByWaterSolutions::MySupport";
     data.method = "tool";
     data.sub = sub;
+    data.userdata = JSON.stringify(userdata)
     console.log( "Support submit: ");
     console.log( data );
 
@@ -19,6 +22,7 @@ function support_submit( data, sub, callback ) {
 
 }
 
+console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 2");
 function category_dispatch( key ) {
     var submittable = {
         'Circulation' : {
@@ -33,12 +37,14 @@ function category_dispatch( key ) {
     }
 }
 
+console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 3");
 $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery.pageslide.min.js', function() {
     $.get("/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery.pageslide.css", function(css){
         $("<style></style>").appendTo("head").html(css);
         $.get("/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.html", function(html){
             $('body').append(html);
 
+console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4");
             // Get User and document URL.
             $('#my_support_link').click( function() {
                 $.pageslide({ href: '#modal', direction: "left", modal: true });
