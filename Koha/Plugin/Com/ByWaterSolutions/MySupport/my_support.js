@@ -5,10 +5,10 @@ function support_submit( userdata, sub, callback ) {
     $('.support').hide();
 
     var data = {};
-    data['class'] = "Koha::Plugin::Com::ByWaterSolutions::MySupport";
+    data.userdata = JSON.stringify(userdata)
+    data.class = "Koha::Plugin::Com::ByWaterSolutions::MySupport";
     data.method = "tool";
     data.sub = sub;
-    data.userdata = JSON.stringify(userdata)
     console.log( "Support submit: ");
     console.log( data );
 

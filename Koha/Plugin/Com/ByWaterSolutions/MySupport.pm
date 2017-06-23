@@ -66,6 +66,7 @@ sub tool {
     my ( $self, $args ) = @_;
 
     my $cgi = $self->{'cgi'};
+    warn( "\$cgi->Vars: ", Dumper($cgi->Vars) );
     my $handler = $cgi->param('sub');
 
     # I would really like to do this with coderefs.
@@ -96,6 +97,7 @@ sub get_initial_data {
     my $logged_in_user   =  _getLoggedInUser( $r->{username} ) ;
     my ( $category_data, $page ) = _getInitialCategory( $r->{url} );
 
+    warn( "\$r: ", Dumper( $r ) );
     $r->{success} = 1;
     $r->{support_data}->{user} = $logged_in_user;
     $r->{support_data}->{username} = $r->{username};
