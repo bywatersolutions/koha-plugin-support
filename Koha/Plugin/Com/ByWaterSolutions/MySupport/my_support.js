@@ -98,6 +98,7 @@ function support_data_submitted( data ) {
 }
 
 function show_startpage ( data ) {
+    console.log("inside show_startpage.");
     $('#startpage').show();
     $('#my_support_name').val(data.support_data.username);
     $('#my_support_email').val(data.support_data.user.email);
@@ -147,8 +148,9 @@ function process_startpage() {
 }
 
 function show_circulation ( data ) {
+    console.log( data );
     $('#circulation').show();
-    $('#circ_borrower').val(data.borrower);
+    $('#circ_borrower').val(data.support_data.circulation.borrower.cardnumber);
 
     console.log( 'show_circulation() payload: ' );
     payload = data;

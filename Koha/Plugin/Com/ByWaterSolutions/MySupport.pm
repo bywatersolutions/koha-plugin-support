@@ -132,7 +132,7 @@ sub passthrough {
     my $params = $cgi->Vars;
     my $r = from_json( $params->{userdata} );
 
-    warn("about to set params->{success}");
+    warn("about to set \$r->{success}");
     $r->{success} = 1;
 
     print $cgi->header('application/json');
@@ -146,24 +146,18 @@ sub circulation {
     my $cgi = $self->{'cgi'};
     my $params = $cgi->Vars;
     # TODO: Need to validate borrower and circ history.
-    # $params->{cardnumber} is flat out wrong
 
     my $r = from_json( $params->{userdata} );
     my $circulation = {
+        cardnumber => undef,
         borrower => undef,
         circ_history => undef
     };
 
-    warn "here's \$r:";
-    warn Dumper( $r );
-    warn "circulation: calling _get_borrower...";
-    $circulation->{borrower} = _get_borrower( $r->{borrower} );
-    warn "circulation: after _get_borrower, calling _get_circ_history...";
+    $circulation->{cardnumber} = _get_cardnumber( $r->{borrower} );
+    $circulation->{borrower} = _get_borrower( $circulation->{cardnumber} );
     my $circ_history = _get_circ_history( $r->{borrower} );
-    warn Dumper( $circ_history );
-    warn $circ_history; 
     $circulation->{circ_history} = $circ_history;
-    warn "circulation: after _get_circ_history.";
 
     $r->{success} = 1;
     $r->{support_data}->{circulation} = $circulation;
@@ -171,10 +165,25 @@ sub circulation {
     print to_json($r);
 }
 
-sub _get_borrower {
+sub _get_cardnumber {
     my $borrowernumber = shift;
     my $schema  = Koha::Database->new()->schema();
-    my $rs = $schema->resultset('Borrower')->search( { borrowernumber => $borrowernumber }, { columns => [ qw( email firstname surname userid cardnumber borrowernumber ) ] } );
+    my $rs = $schema->resultset('Borrower')->search( 
+        { borrowernumber => $borrowernumber },
+        { columns => [ qw( cardnumber ) ] }
+    );
+    my $user;
+    $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
+    for my $row ( $rs->all ) {
+        $user = $row;
+    }
+    return $user->{cardnumber};
+}
+
+sub _get_borrower {
+    my $cardnumber = shift;
+    my $schema  = Koha::Database->new()->schema();
+    my $rs = $schema->resultset('Borrower')->search( { cardnumber => $cardnumber }, { columns => [ qw( email firstname surname userid cardnumber borrowernumber ) ] } );
     my $user;
     $rs->result_class('DBIx::Class::ResultClass::HashRefInflator');
     for my $row ( $rs->all ) {
@@ -207,39 +216,56 @@ sub process_support_request {
 
     my $cgi = $self->{'cgi'};
     my $params = $cgi->Vars;
-    my $html = $params->{html};
+    my $r = from_json( $params->{userdata} );
+
+    my $html = $r->{html};
     $html =~ s/[^\x00-\x7f]//g; # strip wide characters.
-    $params->{html} = '';
+    $r->{html} = '';
     my $borrower   = $cgi->param('borrower');
 
     my $data = [];
 
-    push ( @$data, { page_data => $params } );
-
-    # This should move to circulation.
-    if ( $borrower ) {
-        my $issues = C4::Circulation::GetIssues( { borrowrenumber => $borrower } );
-        push ( @$data, { issues => $issues } );
-    }
+    push ( @$data, { page_data => $r } );
 
     # This is overkill, need to be more selective about which sysprefs to pull.
     #push ( @$data, { sysprefs => _getSysprefs() } );
 
-    _sendEmail( to => $email_to, from => $params->{email}, message => YAML::Dump( $data ), attachments => [], cgi => $cgi );
+    _sendEmail(
+        to => $email_to,
+        from => $r->{support_data}->{user}->{email},
+        message => YAML::Dump( $data ),
+        attachments => [],
+        cgi => $cgi
+    );
 }
+
+my $boundary = "====" . time() . "====";
+my %content_config = {
+    message => qq{Content-Type: text/plain; charset="iso-8859-1"\n}
+               . "Content-Transfer-Encoding: quoted-printable\n",
+    html => qq{Content-Type: text/html; charset="iso-8859-1 name="%s""\n}
+               . "Content-Transfer-Encoding: quoted-printable\n"
+               . qq{Content-Disposition: attachment; filename="%s"\n},
+};
 
 sub _sendEmail {
     my %args = ( @_ );
 
     my $cgi = $args{cgi};
 
+
     my %mail = (
         'To'       => $args{to},
         'From'     => $args{from},
         'Reply-To' => $args{from},
-        'Message'  => $args{message}, 
+        'Body'     => '',
+        'content-type' => qq{multipart/mixed; boundary="$boundary"}
     );
 
+    $mail{Body} .= qq{--$boundary\n};
+    $mail{Body} .= $content_config{message} . "\n";
+    $mail{Body} .= $args{message} . "\n";
+    $mail{Body} .= qq{$boundary--};
     sendmail(%mail);
 
     my $r;
