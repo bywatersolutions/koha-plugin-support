@@ -219,7 +219,6 @@ sub process_support_request {
     my $r = from_json( $params->{userdata} );
 
     my $html = $r->{html};
-    $html =~ s/[^\x00-\x7f]//g; # strip wide characters.
     $r->{html} = '';
     my $borrower   = $cgi->param('borrower');
 
@@ -230,42 +229,71 @@ sub process_support_request {
     # This is overkill, need to be more selective about which sysprefs to pull.
     #push ( @$data, { sysprefs => _getSysprefs() } );
 
+    my $email_subject = $r->{email_subject} || "Support Email Test";
+    warn( '$email_subject: ' . $email_subject );
     _sendEmail(
         to => $email_to,
         from => $r->{support_data}->{user}->{email},
+        subject => $email_subject,
         message => YAML::Dump( $data ),
-        attachments => [],
+        attachments => [ 
+            { filename => "page.html", type => "html", data => $html }
+        ],
         cgi => $cgi
     );
 }
 
 my $boundary = "====" . time() . "====";
-my %content_config = {
+my %content_config = (
     message => qq{Content-Type: text/plain; charset="iso-8859-1"\n}
                . "Content-Transfer-Encoding: quoted-printable\n",
-    html => qq{Content-Type: text/html; charset="iso-8859-1 name="%s""\n}
+    html => qq{Content-Type: text/html; charset="UTF-8" name="%s"\n}
                . "Content-Transfer-Encoding: quoted-printable\n"
                . qq{Content-Disposition: attachment; filename="%s"\n},
-};
+);
+
+sub _attach_as_file {
+    my $args =  shift;
+    warn( "_attach_as_file( \$args )" . Dumper($args) );
+    warn( "_attach_as_file( \$content_config{$args->{type}} )" . Dumper($content_config{$args->{type}}) );
+    my $cconfig = sprintf( $content_config{$args->{type}}, $args->{filename}, $args->{filename} );
+    warn( "_attach_as_file( \$cconfig )" . Dumper($cconfig) );
+    my $r =
+        sprintf( $content_config{$args->{type}}, $args->{filename}, $args->{filename} )
+        . $args->{data} 
+        . $args->{boundary};
+#warn( "_attach_as_file( \$r )" . Dumper($r) );
+    return $r;
+}
 
 sub _sendEmail {
     my %args = ( @_ );
 
     my $cgi = $args{cgi};
 
-
     my %mail = (
         'To'       => $args{to},
         'From'     => $args{from},
         'Reply-To' => $args{from},
+        'Subject'  => $args{subject},
         'Body'     => '',
         'content-type' => qq{multipart/mixed; boundary="$boundary"}
     );
 
-    $mail{Body} .= qq{--$boundary\n};
+    my @attachments = ();
+    $boundary=qq{--$boundary};
+    $mail{Body} .= $boundary . "\n";
     $mail{Body} .= $content_config{message} . "\n";
     $mail{Body} .= $args{message} . "\n";
-    $mail{Body} .= qq{$boundary--};
+    $mail{Body} .= $boundary . "\n";
+
+    foreach my $a ( @{ $args{attachments} } ) {
+        $a->{boundary} = qq{$boundary};
+        push( @attachments, _attach_as_file( $a ) );
+    }
+
+    $mail{Body} .= join( "\n", @attachments );
+    $mail{Body} .= qq{--};
     sendmail(%mail);
 
     my $r;

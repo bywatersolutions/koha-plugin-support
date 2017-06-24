@@ -95,6 +95,8 @@ function support_data_submitted( data ) {
     } else if ( data.error ) {
         alert("ERROR: " + data.error );
     }
+    $.pageslide.close();
+    $('#my_support_link').show();
 }
 
 function show_startpage ( data ) {
@@ -204,9 +206,10 @@ function show_basic_info_changes() {
 }
 
 function process_basic_info_finish() {
-    payload.steps_to_re_create = $("#steps_to_re_create").val(),
-    payload.tried_other_browser = $("#tried_other_browser").val(),
-    payload.email_subject = $("#email_subject").val()
+    payload.steps_to_re_create = $("#steps_to_re_create").val();
+    payload.tried_other_browser = $("#tried_other_browser").val();
+    payload.email_subject = $("#email_subject").val();
+    payload.html = $('html')[0].outerHTML;
 
     support_submit( payload, "process_support_request", support_data_submitted );
 };
