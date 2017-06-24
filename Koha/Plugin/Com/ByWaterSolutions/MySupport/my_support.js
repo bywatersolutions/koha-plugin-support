@@ -53,9 +53,12 @@ console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4
                 payload = {
                     "username":     $(".loggedinusername").html(), 
                     "url":          document.URL,
-                    "support_data": {}
+                    "support_data_array" : [],
+                    "support_data": {} 
                 };
 
+                payload.support_data_array.push( { "url" : document.URL } );
+                payload.support_data_array.push( { "branchname" : $("#logged-in-branch-name")  } );
                 payload.support_data.url = document.URL;
 
                 support_submit( payload, "get_initial_data", show_startpage );
@@ -92,7 +95,7 @@ console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4
 function show_startpage ( data ) {
     console.log("inside show_startpage.");
     $('#startpage').show();
-    $('#my_support_name').val(data.support_data.username);
+    $('#my_support_name').val(data.support_data.user.userid);
     $('#my_support_email').val(data.support_data.user.email);
     $('#category').html(data.category);
     $('#page').html(data.page);
@@ -123,8 +126,8 @@ function process_startpage() {
         borrower = '';
     }
 
-    payload.support_data.user.email    = $("#my_support_email").val();
-    payload.support_data.user.username = $("#my_support_name").val();
+    payload.support_data.user.email  = $("#my_support_email").val();
+    payload.support_data.user.userid = $("#my_support_name").val();
     payload.support_data.category = category;
     payload.category = category;
     payload.borrower = borrower;
@@ -149,9 +152,10 @@ function show_circulation ( data ) {
 function process_circulation() {
     console.log( "in process_circulation" );
 
-    payload.cardnumber = $("#circ_borrower").val();
-    payload.item_barcode = $("#circ_barcode").val();
-    payload.circ_description = $("#circ_description").val();
+    payload.support_data.circulation = {};
+    payload.support_data.circulation.cardnumber = $("#circ_borrower").val();
+    payload.support_data.circulation.item_barcode = $("#circ_barcode").val();
+    payload.support_data.circulation.circ_description = $("#circ_description").val();
 
     support_submit( payload, "passthrough", show_basic_info );
 }
@@ -164,10 +168,11 @@ function show_basic_info ( data ) {
 
 function process_basic_info() {
     console.log( "in process_basic_info" );
-    payload.support_data.browser_cache_cleared = $("#browser_cache").val();
-    payload.support_data.expected_results = $("#expected").val();
-    payload.support_data.actual_results = $("#actual").val();
-    payload.Errormessage = $("#Errormessage").val();
+    payload.support_data.basic = {};
+    payload.support_data.basic.browser_cache_cleared = $("#browser_cache").val();
+    payload.support_data.basic.expected_results = $("#expected").val();
+    payload.support_data.basic.actual_results = $("#actual").val();
+    payload.support_data.basic.Errormessage = $("#Errormessage").val();
 
     support_submit( payload, "passthrough", show_basic_info_when );
 }
@@ -179,8 +184,9 @@ function show_basic_info_when( data ) {
 
 function process_basic_info_when() {
     console.log( "in process_basic_info_when" );
-    payload.support_data.issue_frequency = $("#how_often").val();
-    payload.support_data.issue_when = $("#when").val();
+    payload.support_data.when = {};
+    payload.support_data.when.issue_frequency = $("#how_often").val();
+    payload.support_data.when.issue_when = $("#when").val();
     support_submit( payload, "passthrough", show_basic_info_changes );
 }
 
@@ -191,9 +197,10 @@ function show_basic_info_changes( data ) {
 
 function process_basic_info_changes() {
     console.log( "in process_basic_info_changes" );
-    payload.support_data.recent_changes = $("#recent_changes").val();
-    payload.support_data.recent_change_description = $("#recent_change_description").val();
-    payload.support_data.other_recent_changes = $("#other_recent_changes").val();
+    payload.support_data.changes = {};
+    payload.support_data.changes.recent_changes = $("#recent_changes").val();
+    payload.support_data.changes.recent_change_description = $("#recent_change_description").val();
+    payload.support_data.changes.other_recent_changes = $("#other_recent_changes").val();
     support_submit( payload, "passthrough", show_basic_info_finish );
 }
 

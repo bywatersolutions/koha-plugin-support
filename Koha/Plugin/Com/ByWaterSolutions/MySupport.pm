@@ -85,12 +85,10 @@ sub tool {
 
 }
 
-# use _getLoggedInUser $username to grab email, firstname, surname.
-
 sub get_initial_data {
     my ( $self, $args ) = @_;
 
-# http://stackoverflow.com/questions/15899616/jquery-ajax-to-perl-json-module-decode-of-data
+    # http://stackoverflow.com/questions/15899616/jquery-ajax-to-perl-json-module-decode-of-data
     my $cgi = $self->{'cgi'};
     my $params = $cgi->Vars;
     my $r = from_json( $params->{userdata} );
@@ -100,7 +98,6 @@ sub get_initial_data {
     warn( "\$r: ", Dumper( $r ) );
     $r->{success} = 1;
     $r->{support_data}->{user} = $logged_in_user;
-    $r->{support_data}->{username} = $r->{username};
     $r->{category_data} = $category_data;
     $r->{page} = $page;
 
