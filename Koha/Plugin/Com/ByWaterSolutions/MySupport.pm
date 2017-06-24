@@ -127,7 +127,6 @@ sub get_initial_data_part2 {
 sub passthrough {
     my ( $self, $args ) = @_;
 
-    warn("In passthrough");
     my $cgi = $self->{'cgi'};
     my $params = $cgi->Vars;
     my $r = from_json( $params->{userdata} );
@@ -136,7 +135,7 @@ sub passthrough {
     $r->{success} = 1;
 
     print $cgi->header('application/json');
-    warn to_json($r);
+    warn "passthrough: \$r" . Dumper($r);
     print to_json($r);
 }
 
@@ -224,7 +223,7 @@ sub process_support_request {
 
     my $data = [];
 
-    push ( @$data, { page_data => $r } );
+    push ( @$data, $r->{support_data} );
 
     # This is overkill, need to be more selective about which sysprefs to pull.
     #push ( @$data, { sysprefs => _getSysprefs() } );

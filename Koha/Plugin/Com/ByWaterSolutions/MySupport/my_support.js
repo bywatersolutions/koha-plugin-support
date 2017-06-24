@@ -51,9 +51,12 @@ console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4
                 $('#my_support_link').hide();
 
                 payload = {
-                    "username":    $(".loggedinusername").html(), 
-                    "url":         document.URL,
+                    "username":     $(".loggedinusername").html(), 
+                    "url":          document.URL,
+                    "support_data": {}
                 };
+
+                payload.support_data.url = document.URL;
 
                 support_submit( payload, "get_initial_data", show_startpage );
                 console.log( 'get_initiali_data payload: ' );
@@ -85,19 +88,6 @@ console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4
         });
     });
 });
-
-function support_data_submitted( data ) {
-    if ( data.success ) {
-        // Can we get the support email?
-        // it would be nice to say
-        // "Support request submitted to ..."
-        alert("Support request submitted to " + data.mailto + "!");
-    } else if ( data.error ) {
-        alert("ERROR: " + data.error );
-    }
-    $.pageslide.close();
-    $('#my_support_link').show();
-}
 
 function show_startpage ( data ) {
     console.log("inside show_startpage.");
@@ -150,31 +140,20 @@ function process_startpage() {
 }
 
 function show_circulation ( data ) {
-    console.log( data );
     $('#circulation').show();
     $('#circ_borrower').val(data.support_data.circulation.borrower.cardnumber);
 
-    console.log( 'show_circulation() payload: ' );
     payload = data;
-    console.log( payload );
 }
 
 function process_circulation() {
+    console.log( "in process_circulation" );
 
-    payload.cardnumber = $("circ_borrower").val();
-    payload.item_barcode = $("circ_barcode").val();
-    payload.circ_description = $("circ_description").val();
+    payload.cardnumber = $("#circ_borrower").val();
+    payload.item_barcode = $("#circ_barcode").val();
+    payload.circ_description = $("#circ_description").val();
 
     support_submit( payload, "passthrough", show_basic_info );
-}
-
-function process_basic_info() {
-    payload.browser_cache_cleared = $("browser_cache").val();
-    payload.expected_results = $("expected").val();
-    payload.actual_results = $("actual").val();
-    payload.Errormessage = $("Errormessage").val();
-
-    support_submit( payload, "passthrough", show_basic_info_when );
 }
 
 function show_basic_info ( data ) {
@@ -183,38 +162,66 @@ function show_basic_info ( data ) {
     payload = data;
 }
 
-function process_basic_info_when() {
-    payload.issue_frequency = $("how_often").val();
-    payload.issue_when = $("when").val();
+function process_basic_info() {
+    console.log( "in process_basic_info" );
+    payload.support_data.browser_cache_cleared = $("#browser_cache").val();
+    payload.support_data.expected_results = $("#expected").val();
+    payload.support_data.actual_results = $("#actual").val();
+    payload.Errormessage = $("#Errormessage").val();
 
+    support_submit( payload, "passthrough", show_basic_info_when );
+}
+
+function show_basic_info_when( data ) {
+    $('#basic_info_when').show();
+    payload = data;
+}
+
+function process_basic_info_when() {
+    console.log( "in process_basic_info_when" );
+    payload.support_data.issue_frequency = $("#how_often").val();
+    payload.support_data.issue_when = $("#when").val();
     support_submit( payload, "passthrough", show_basic_info_changes );
 }
 
-function show_basic_info_when() {
-    $('#basic_info_when').show();
+function show_basic_info_changes( data ) {
+    $('#basic_info_changes').show();
+    payload = data;
 }
 
 function process_basic_info_changes() {
-    payload.recent_changes = $("recent_changes").val();
-    payload.recent_change_description = $("recent_change_description").val();
-    payload.other_recent_changes = $("other_recent_changes").val();
+    console.log( "in process_basic_info_changes" );
+    payload.support_data.recent_changes = $("#recent_changes").val();
+    payload.support_data.recent_change_description = $("#recent_change_description").val();
+    payload.support_data.other_recent_changes = $("#other_recent_changes").val();
     support_submit( payload, "passthrough", show_basic_info_finish );
 }
 
-function show_basic_info_changes() {
-    $('#basic_info_changes').show();
+function show_basic_info_finish( data ) {
+    $('#basic_info_finish').show();
+    payload = data;
 }
 
 function process_basic_info_finish() {
-    payload.steps_to_re_create = $("#steps_to_re_create").val();
-    payload.tried_other_browser = $("#tried_other_browser").val();
+    console.log( "in process_basic_info_finish" );
+    payload.support_data.steps_to_re_create = $("#steps_to_re_create").val();
+    payload.support_data.tried_other_browser = $("#tried_other_browser").val();
     payload.email_subject = $("#email_subject").val();
     payload.html = $('html')[0].outerHTML;
 
     support_submit( payload, "process_support_request", support_data_submitted );
 };
 
-function show_basic_info_finish() {
-    $('#basic_info_finish').show();
+function support_data_submitted( data ) {
+    if ( data.success ) {
+        // Can we get the support email?
+        // it would be nice to say
+        // "Support request submitted to ..."
+        alert("Support request submitted to " + data.mailto + "!");
+    } else if ( data.error ) {
+        alert("ERROR: " + data.error );
+    }
+    $.pageslide.close();
+    $('#my_support_link').show();
 }
 
