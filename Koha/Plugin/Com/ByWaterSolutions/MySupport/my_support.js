@@ -58,7 +58,8 @@ console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4
                 };
 
                 payload.support_data_array.push( { "url" : document.URL } );
-                payload.support_data_array.push( { "branchname" : $("#logged-in-branch-name")  } );
+                payload.support_data_array.push( { "branchname" : $("#logged-in-branch-name").html()  } );
+                payload.support_data_array.push( { "branchcode" : $("#logged-in-branch-code").html()  } );
                 payload.support_data.url = document.URL;
 
                 support_submit( payload, "get_initial_data", show_startpage );
@@ -129,6 +130,8 @@ function process_startpage() {
     payload.support_data.user.email  = $("#my_support_email").val();
     payload.support_data.user.userid = $("#my_support_name").val();
     payload.support_data.category = category;
+    payload.support_data_array.push( { "category" : category } );
+    payload.support_data_array.push( { "user" : payload.support_data.user } );
     payload.category = category;
     payload.borrower = borrower;
 
@@ -152,10 +155,14 @@ function show_circulation ( data ) {
 function process_circulation() {
     console.log( "in process_circulation" );
 
-    payload.support_data.circulation = {};
-    payload.support_data.circulation.cardnumber = $("#circ_borrower").val();
-    payload.support_data.circulation.item_barcode = $("#circ_barcode").val();
-    payload.support_data.circulation.circ_description = $("#circ_description").val();
+    var circulation = [];
+    circulation.push( { "cardnumber" : $("#circ_borrower").val() } );
+    circulation.push( { "item_barcode" : $("#circ_barcode").val() } );
+    circulation.push( { "circ_description" : $("#circ_description").val() } );
+
+    payload.cardnumber = $("#circ_borrower").val();
+    payload.support_data.circulation = circulation;
+    payload.support_data_array.push( { "circulation": circulation } );
 
     support_submit( payload, "passthrough", show_basic_info );
 }
@@ -168,11 +175,14 @@ function show_basic_info ( data ) {
 
 function process_basic_info() {
     console.log( "in process_basic_info" );
-    payload.support_data.basic = {};
-    payload.support_data.basic.browser_cache_cleared = $("#browser_cache").val();
-    payload.support_data.basic.expected_results = $("#expected").val();
-    payload.support_data.basic.actual_results = $("#actual").val();
-    payload.support_data.basic.Errormessage = $("#Errormessage").val();
+    var basic = [];
+    basic.push( { "browser_cache_cleared": $("#browser_cache").val() } );
+    basic.push( { "expected_results": $("#expected").val() } );
+    basic.push( { "actual_results": $("#actual").val() } );
+    basic.push( { "error_message": $("#Errormessage").val() } );
+
+    payload.support_data.basic = basic;
+    payload.support_data_array.push( { "basic" : basic } );
 
     support_submit( payload, "passthrough", show_basic_info_when );
 }
@@ -184,9 +194,12 @@ function show_basic_info_when( data ) {
 
 function process_basic_info_when() {
     console.log( "in process_basic_info_when" );
-    payload.support_data.when = {};
-    payload.support_data.when.issue_frequency = $("#how_often").val();
-    payload.support_data.when.issue_when = $("#when").val();
+    var when = {};
+    when.issue_frequency = $("#how_often").val();
+    when.issue_when = $("#when").val();
+
+    payload.support_data.when = when;
+    payload.support_data_array.push( {"when" : when } );
     support_submit( payload, "passthrough", show_basic_info_changes );
 }
 
@@ -197,10 +210,15 @@ function show_basic_info_changes( data ) {
 
 function process_basic_info_changes() {
     console.log( "in process_basic_info_changes" );
+
+    var changes = [];
     payload.support_data.changes = {};
-    payload.support_data.changes.recent_changes = $("#recent_changes").val();
-    payload.support_data.changes.recent_change_description = $("#recent_change_description").val();
-    payload.support_data.changes.other_recent_changes = $("#other_recent_changes").val();
+    changes.push( { "recent_changes" : $("#recent_changes").val() } );
+    changes.push( { "recent_change_description" : $("#recent_change_description").val() } );
+    changes.push( { "other_recent_changes" : $("#other_recent_changes").val() } );
+
+    payload.support_data.changes = changes;
+    payload.support_data_array.push( { "changes" : changes } );
     support_submit( payload, "passthrough", show_basic_info_finish );
 }
 
@@ -213,6 +231,8 @@ function process_basic_info_finish() {
     console.log( "in process_basic_info_finish" );
     payload.support_data.steps_to_re_create = $("#steps_to_re_create").val();
     payload.support_data.tried_other_browser = $("#tried_other_browser").val();
+    payload.support_data_array.push( { "steps_to_re_create" : $("#steps_to_re_create").val() } );
+    payload.support_data_array.push( { "tried_other_browser" : $("#tried_other_browser").val() } );
     payload.email_subject = $("#email_subject").val();
     payload.html = $('html')[0].outerHTML;
 

@@ -220,7 +220,7 @@ sub process_support_request {
 
     my $data = [];
 
-    push ( @$data, $r->{support_data} );
+    push ( @$data, $r->{support_data_array}, $r->{support_data} );
 
     # This is overkill, need to be more selective about which sysprefs to pull.
     #push ( @$data, { sysprefs => _getSysprefs() } );
