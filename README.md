@@ -10,7 +10,7 @@ The plugin is context-sensitive, and will pull support category information base
 
 # Downloading
 
-From the [release page](https://github.com/bywatersolutions/koha-plugin-support/releases) you can download the relevant \*.kpz file
+From the [release page](https://github.com/bywatersolutions/koha-plugin-support/tree/master/releases) you can download the relevant \*.kpz file
 
 # Installing
 
