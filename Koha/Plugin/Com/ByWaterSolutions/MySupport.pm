@@ -9,10 +9,16 @@ use base qw(Koha::Plugins::Base);
 
 ## We will also need to include any Koha libraries we want to access
 use C4::Context;
-use C4::Branch;
-use C4::Members;
+# Pre 16.05, use C4::Branch, and comment out use Koha::Libraries.
+# use C4::Branch;
+use Koha::Libraries;
+# Pre 16.11, use C4::Members and comment out use Koha::Patrons. 
+# use C4::Members;
+use Koha::Patrons;
 use C4::Auth;
 use Koha::Database;
+
+
 
 use YAML;
 use JSON qw(to_json from_json);
@@ -23,7 +29,7 @@ use List::MoreUtils qw(uniq);
 use Data::Dumper;
 
 ## Here we set our plugin version
-our $VERSION = 1.02;
+our $VERSION = "16.11.0.0";
 
 ## TODO: Need to write perl docs. This should probably be used to generate MySupport.md.
 
@@ -35,8 +41,8 @@ our $metadata = {
     description =>
       'This plugin automatically generates support emails with useful data.',
     date_authored   => '2014-05-05',
-    date_updated    => '2016-06-19',
-    minimum_version => '3.14',
+    date_updated    => '2016-07-08',
+    minimum_version => '16.11',
     maximum_version => undef,
     version         => $VERSION,
 };
@@ -458,4 +464,8 @@ sub uninstall() {
     my $table = $self->get_qualified_table_name('mytable');
 
     return C4::Context->dbh->do("DROP TABLE $table");
+}
+
+sub version() {
+    return "$VERSION";
 }
