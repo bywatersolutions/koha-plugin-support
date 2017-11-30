@@ -29,7 +29,7 @@ use List::MoreUtils qw(uniq);
 use Data::Dumper;
 
 ## Here we set our plugin version
-our $VERSION = "16.11.0.0";
+our $VERSION = "{VERSION}";
 
 ## TODO: Need to write perl docs. This should probably be used to generate MySupport.md.
 
