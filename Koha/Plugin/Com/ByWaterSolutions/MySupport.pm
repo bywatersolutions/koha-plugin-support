@@ -12,7 +12,7 @@ use C4::Context;
 # Pre 16.05, use C4::Branch, and comment out use Koha::Libraries.
 # use C4::Branch;
 use Koha::Libraries;
-# Pre 16.11, use C4::Members and comment out use Koha::Patrons. 
+# Pre 16.11, use C4::Members and comment out use Koha::Patrons.
 # use C4::Members;
 use Koha::Patrons;
 use C4::Auth;
@@ -81,8 +81,6 @@ sub tool {
         $self->process_support_request();
     } elsif ( $handler eq 'get_initial_data' ) {
         $self->get_initial_data();
-    } elsif ( $handler eq 'get_initial_data_part2' ) {
-        $self->get_initial_data_part2();
     } elsif ( $handler eq 'circulation' ) {
         $self->circulation();
     } elsif ( $handler eq 'passthrough' ) {
@@ -108,21 +106,6 @@ sub get_initial_data {
     $r->{page} = $page;
 
     warn( Dumper $r );
-    print $cgi->header('application/json');
-    print to_json($r);
-}
-
-sub get_initial_data_part2 {
-    my ( $self, $args ) = @_;
-
-    my $cgi = $self->{'cgi'};
-    my $params = $cgi->Vars;
-
-    # TODO: Get category.
-
-    my $r;
-    $r->{success} = 1;
-
     print $cgi->header('application/json');
     print to_json($r);
 }
@@ -170,7 +153,7 @@ sub circulation {
 sub _get_cardnumber {
     my $borrowernumber = shift;
     my $schema  = Koha::Database->new()->schema();
-    my $rs = $schema->resultset('Borrower')->search( 
+    my $rs = $schema->resultset('Borrower')->search(
         { borrowernumber => $borrowernumber },
         { columns => [ qw( cardnumber ) ] }
     );
@@ -238,7 +221,7 @@ sub process_support_request {
         from => $r->{support_data}->{user}->{email},
         subject => $email_subject,
         message => YAML::Dump( $data ),
-        attachments => [ 
+        attachments => [
             { filename => "page.html", type => "html", data => $html }
         ],
         cgi => $cgi
@@ -262,7 +245,7 @@ sub _attach_as_file {
     warn( "_attach_as_file( \$cconfig )" . Dumper($cconfig) );
     my $r =
         sprintf( $content_config{$args->{type}}, $args->{filename}, $args->{filename} )
-        . $args->{data} 
+        . $args->{data}
         . $args->{boundary};
 #warn( "_attach_as_file( \$r )" . Dumper($r) );
     return $r;
@@ -390,7 +373,7 @@ sub _getInitialCategory {
     my $broad_category = { @broad_category_mapping };
     my $narrow_category = { @narrow_category_mapping };
     my $page = $url_parts[-2] . '/' . $url_parts[-1];
-    my $category = ( defined $narrow_category->{$page} ) 
+    my $category = ( defined $narrow_category->{$page} )
         ? $narrow_category->{$page}
         : $broad_category->{$url_parts[-2]};
     $category //= 'General';
@@ -414,6 +397,28 @@ sub _getSysprefs {
     return \@sysprefs;
 }
 
+sub update_intranetuserjs {
+    my ($self) = @_;
+    warn ("  in update_intranetuserjs");
+    warn ("  loading intranetuserjs");
+    my $intranetuserjs = C4::Context->preference('intranetuserjs');
+    warn ("  clearing old support config from intranetuserjs");
+    $intranetuserjs =~ s/\n\/\* JS for Koha Support Plugin.*End of JS for Koha Support Plugin \*\///gs;
+
+    my $support_js = q[$.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js')];
+
+    $support_js = qq|\n/* JS for Koha Support Plugin
+   This JS was added automatically by installing the Support plugin
+   Please do not modify */|
+      . $support_js
+      . q|/* End of JS for Koha Support Plugin */|;
+
+    warn ("  appending support_js: '$support_js'");
+    $intranetuserjs .= $support_js;
+    warn ("  Loading new intranetuserjs: '$intranetuserjs'");
+    C4::Context->set_preference( 'intranetuserjs', $intranetuserjs );
+}
+
 ## If your tool is complicated enough to needs it's own setting/configuration
 ## you will want to add a 'configure' method to your plugin like so.
 ## Here I am throwing all the logic into the 'configure' method, but it could
@@ -423,25 +428,32 @@ sub configure {
     my $cgi = $self->{'cgi'};
 
     unless ( $cgi->param('save') ) {
+        my $pluginsdir = C4::Context->config("pluginsdir");
         my $template = $self->get_template( { file => 'configure.tt' } );
 
         ## Grab the values we already have for our settings, if any exist
         $template->param(
-            email_address => $self->retrieve_data('email_address') );
+            email_address => $self->retrieve_data('email_address'),
+            plugins_dir   => $pluginsdir
+        );
 
         print $cgi->header();
         print $template->output();
     }
     else {
+        warn( "configure: got here" );
         $self->store_data(
             {
                 email_address      => $cgi->param('email_address'),
                 last_configured_by => C4::Context->userenv->{'number'},
             }
         );
+        $self->update_intranetuserjs();
         $self->go_home();
     }
 }
+
+
 
 ## This is the 'install' method. Any database tables or other setup that should
 ## be done when the plugin if first installed should be executed in this method.

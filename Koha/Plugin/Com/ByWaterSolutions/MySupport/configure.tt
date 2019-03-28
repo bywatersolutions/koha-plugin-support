@@ -14,10 +14,18 @@
     <h2>My support</h2>
 
     <h3>Setup</h3>
-    Add the following line to your intranetuserjs system preference: 
+
+    Add the following line to the end of the staff client section in your site's apache configuration:
+
     <pre>
-    $.getScript('[% PLUGIN_PATH %]/my_support.js')
+
+    <code>&lt;Directory &quot;[% plugins_dir %]&quot; &gt;
+        Require all granted
+    &lt;/Directory&gt;
+    Alias /plugin &quot;[% plugins_dir %]/&quot;
+    </code>
     </pre>
+
 
     <h3>Configuration</h3>
     <!-- Notice our form here has no 'action', this is good, it means that our forms will always get passed back to 'plugins/run.pl'. You could hard code it instead if you prefer -->
@@ -28,8 +36,7 @@
 
         <label for="email_address">Email address: </label>
         <input type="text" name="email_address" value="[% email_address %]" />
-        <span class="hint">This should be the email address of the support person, or the ticketing system.</span>
-
+        <span class="hint">This should be the email address of the support person, or the ticketing system.</span><br/>
         <p>
 
         <input type="hidden" name="save" value="1" />
