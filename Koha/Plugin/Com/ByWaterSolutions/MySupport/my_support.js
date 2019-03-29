@@ -147,7 +147,7 @@ function process_basic_only_startpage() {
 
 }
 
-function show_basic_only_request() {
+function show_basic_only_request( data ) {
     $('#basic_only_request').show();
 
     payload = data;
@@ -161,7 +161,7 @@ function process_basic_only_request() {
     support_submit( payload, "passthrough", show_basic_only_summary );
 }
 
-function show_basic_only_summary() {
+function show_basic_only_summary( data ) {
     $('#basic_only_request').show();
 
     payload = data;
