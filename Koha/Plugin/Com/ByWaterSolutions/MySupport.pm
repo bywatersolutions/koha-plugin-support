@@ -100,6 +100,7 @@ sub get_initial_data {
     my ( $category_data, $page ) = _getInitialCategory( $r->{url} );
 
     warn( "\$r: ", Dumper( $r ) );
+    $r->{basic_only} = $self->retrieve_data('basic_only');
     $r->{success} = 1;
     $r->{support_data}->{user} = $logged_in_user;
     $r->{category_data} = $category_data;
@@ -446,6 +447,7 @@ sub configure {
             {
                 email_address      => $cgi->param('email_address'),
                 last_configured_by => C4::Context->userenv->{'number'},
+                basic_only         => $cgi->param('basic_only'),
             }
         );
         $self->update_intranetuserjs();

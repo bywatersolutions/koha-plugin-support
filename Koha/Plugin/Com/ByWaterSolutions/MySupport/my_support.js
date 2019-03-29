@@ -67,7 +67,11 @@ console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4
                 console.log( payload );
             });
 
-
+            /**** BASIC ONLY WORK-FLOW ****/
+            $('#basic_only_support_startpage_submit').click( process_basic_only_startpage );
+            $('#basic_only_request_submit').click( process_basic_only_request );
+            $('#basic_only_summary_submit').click( process_basic_only_summary );
+            /**** END BASIC ONLY WORK-FLOW ****/
             // Get Support Categories
             $('#my_support_startpage_submit').click( process_startpage );
 
@@ -95,26 +99,90 @@ console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4
 
 function show_startpage ( data ) {
     console.log("inside show_startpage.");
-    $('#startpage').show();
-    $('#my_support_name').val(data.support_data.user.userid);
-    $('#my_support_email').val(data.support_data.user.email);
-    $('#category').html(data.category);
-    $('#page').html(data.page);
-    $('#support_category').append(
-        '<option value="' 
-        + data.category_data.selected_category + '">' 
-        + data.category_data.selected_category + '</option>'
-    );
-    for( i=0; i<data.category_data.category_list.length; ++i ) {
+    if( data.basic_only == 0) {
+        $('#startpage').show();
+        $('#my_support_name').val(data.support_data.user.userid);
+        $('#my_support_email').val(data.support_data.user.email);
+        $('#category').html(data.category);
         $('#support_category').append(
-            '<option value="' + data.category_data.category_list[i] + '">' 
-            + data.category_data.category_list[i] + '</option>'
+            '<option value="' 
+            + data.category_data.selected_category + '">' 
+            + data.category_data.selected_category + '</option>'
         );
+        for( i=0; i<data.category_data.category_list.length; ++i ) {
+            $('#support_category').append(
+                '<option value="' + data.category_data.category_list[i] + '">' 
+                + data.category_data.category_list[i] + '</option>'
+            );
+        }
+    } else {
+        $('#basic_only_startpage').show();
+        $('#basic_only_support_name').val(data.support_data.user.userid);
+        $('#basic_only_support_email').val(data.support_data.user.email);
     }
+    $('#page').html(data.page);
     payload = data;
     console.log( 'show_startpage() payload: ' );
     console.log( payload );
 }
+
+/* basic_only work flow */
+function process_basic_only_startpage() {
+
+    if (typeof borrowernumber != 'undefined') {
+        borrower = borrowernumber;
+    } else {
+        console.log("borrowernumber is undefined")
+        borrower = '';
+    }
+
+    payload.support_data.user.email  = $("#basic_only_support_email").val();
+    payload.support_data.user.userid = $("#basic_only_support_name").val();
+    payload.support_data.user.phone  = $("#basic_only_support_phone").val();
+    payload.support_data_array.push( { "user" : payload.support_data.user } );
+    payload.borrower = borrower;
+
+    console.log( payload );
+    support_submit( payload, passthrough, show_basic_only_request );
+
+}
+
+function show_basic_only_request {
+    $('#basic_only_request').show();
+
+    payload = data;
+}
+
+function process_basic_only_request() {
+
+    payload.support_data.request = $("#basic_only_request_text").val();
+
+    console.log( payload );
+    support_submit( payload, passthrough, show_basic_only_summary );
+}
+
+function show_basic_only_summary {
+    $('#basic_only_request').show();
+
+    payload = data;
+}
+
+function process_basic_only_summary() {
+
+    if( $("#basic_only_request_text").val() === "no" ) {
+        $.pageslide.close();
+        $('#my_support_link').show();
+    } else {
+        console.log( payload );
+
+        payload.email_subject = "Support request from " + payload.support_data.user.userid;
+        payload.html = $('html')[0].outerHTML;
+
+        support_submit( payload, "process_support_request", support_data_submitted );
+    }
+}
+/* end of basic_only work flow */
+
 
 function process_startpage() {
 

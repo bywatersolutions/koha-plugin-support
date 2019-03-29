@@ -1,5 +1,63 @@
 <div id="modal" style="display:none">
     <form>
+        <!-- BASIC-ONLY WORK FLOW -->
+        <fieldset id="basic_only_startpage" class="support">
+            <legend>My support</legend>
+
+            <div class="oneline">
+                <label>Name</label>
+                <input id="basic_only_support_name" type="text"/>
+                <p/>
+            </div>
+
+            <div class="oneline">
+                <label>Email</label>
+                <input id="basic_only_support_email" type="text"/>
+                <p/>
+            </div>
+
+            <div class="oneline">
+                <label>Phone number</label>
+                <input id="basic_only_support_phone" type="text"/>
+                <p/>
+            </div>
+
+            <p> <a id="basic_only_support_startpage_submit" href="#" class="btn">Next</a> </p>
+
+        </fieldset>
+
+        <fieldset id="basic_only_request" class="support">
+            <legend>What's going on?</legend>
+
+            <div class="reset">
+                <p> <label>What is your question or request?</label> </p>
+                <p> <textarea id="basic_only_request_text" type="text"></textarea> </p>
+            </div>
+
+            <p> <a id="basic_only_request_submit" href="#" class="btn">Next</a> </p>
+
+        </fieldset>
+        <fieldset id="basic_only_summary" class="support">
+            <legend>Summary</legend>
+
+            <div class="reset">
+                <p> Here's the information that you've provided: </p>
+<!-- FIXME
+    See http://json2html.com/ 
+-->
+                <p> TODO: RENDER JSON HERE</p>
+            </div>
+
+            <div class="reset">
+                <label>Do you want to continue?</label>
+                <span><input id="basic_only_send_data" name="basic_only_send_data" type="radio" value="yes" checked/>yes</span>
+                <span><input id="basic_only_send_data" name="basic_only_send_data" type="radio" value="no" />no</span>
+                <p/>
+            </div>
+            <p> <a id="basic_only_summary_submit" href="#" class="btn">Submit</a> </p>
+
+        </fieldset>
+        <!-- END OF BASIC-ONLY WORK FLOW -->
         <fieldset id="startpage" class="support">
             <legend>My support</legend>
 
