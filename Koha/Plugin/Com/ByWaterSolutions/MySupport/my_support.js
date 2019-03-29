@@ -143,7 +143,7 @@ function process_basic_only_startpage() {
     payload.borrower = borrower;
 
     console.log( payload );
-    support_submit( payload, passthrough, show_basic_only_request );
+    support_submit( payload, "passthrough", show_basic_only_request );
 
 }
 
@@ -158,7 +158,7 @@ function process_basic_only_request() {
     payload.support_data.request = $("#basic_only_request_text").val();
 
     console.log( payload );
-    support_submit( payload, passthrough, show_basic_only_summary );
+    support_submit( payload, "passthrough", show_basic_only_summary );
 }
 
 function show_basic_only_summary() {
