@@ -162,7 +162,7 @@ function process_basic_only_request() {
 }
 
 function show_basic_only_summary( data ) {
-    $('#basic_only_request').show();
+    $('#basic_only_summary').show();
 
     payload = data;
 }
