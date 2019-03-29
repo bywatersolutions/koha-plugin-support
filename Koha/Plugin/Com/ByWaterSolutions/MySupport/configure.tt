@@ -37,9 +37,9 @@
         <label for="email_address">Email address: </label>
         <input type="text" name="email_address" value="[% email_address %]" />
         <span class="hint">This should be the email address of the support person, or the ticketing system.</span><br/>
-        <input type="radio" name="basic_only" value="1"> <label for="1">Support Request Card Only ( Name, Email, Phone
+        <input type="radio" name="basic_only" value="1" [% IF( basic_only ) %] checked = "checked" [% END %] > <label for="1">Support Request Card Only ( Name, Email, Phone
  Number, and Problem Summary )</label><br/>
-        <input type="radio" name="basic_only" value="0"> <label for="0">All cards</label><br/>
+        <input type="radio" name="basic_only" value="0" [% UNLESS( basic_only ) %] checked = "checked" [% END %]> <label for="0">All cards</label><br/>
         <p>
 
         <input type="hidden" name="save" value="1" />

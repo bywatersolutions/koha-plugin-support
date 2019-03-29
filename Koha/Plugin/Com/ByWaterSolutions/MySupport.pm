@@ -435,6 +435,7 @@ sub configure {
         ## Grab the values we already have for our settings, if any exist
         $template->param(
             email_address => $self->retrieve_data('email_address'),
+            basic_only    => $self->retrieve_data('basic_only'),
             plugins_dir   => $pluginsdir
         );
 
