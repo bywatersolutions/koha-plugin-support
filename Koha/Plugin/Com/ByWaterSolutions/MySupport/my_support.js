@@ -155,7 +155,7 @@ function show_basic_only_request( data ) {
 
 function process_basic_only_request() {
 
-    payload.support_data.request = $("#basic_only_request_text").val();
+    payload.support_data_array.push( { "request" : $("#basic_only_request_text").val() } );
 
     console.log( payload );
     support_submit( payload, "passthrough", show_basic_only_summary );
