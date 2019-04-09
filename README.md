@@ -8,8 +8,8 @@ This plugin is meant to provide an easy way of reporting support issues in Koha.
 
 Furture development for this plugin will achieve the following objectives:
 
-1) The plugin will context-sensitive, and will pull support category information based on the URL of the page the telempath is opened on. The 
-2) 
+1) The plugin will context-sensitive, and will pull support category information based on the URL of the page the telempath is opened on. 
+2) Telempath runs off of "Cards". There is a "Basic" Support Request Card which is the template for the fancier cards to come. This Basic Card is static and can be used by anyone downloading and installing the plugin.
 3) Telempath will integrate with other open source resources, such as ticketing systems and customer relations managements systems, to make submission of Koha support requests easier.
 4) Telempath will offer suggestions to the Koha end user based on the URL of the page, module selected, or the keywords of the support inquery. Already the Koha community has resources to link Koha users to the manual in Koha. There are RSS feeds and listservs for recently created bugs. 
 
