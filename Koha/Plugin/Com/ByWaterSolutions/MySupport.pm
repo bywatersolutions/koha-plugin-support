@@ -83,6 +83,8 @@ sub tool {
         $self->get_initial_data();
     } elsif ( $handler eq 'circulation' ) {
         $self->circulation();
+    } elsif ( $handler eq 'basic_only_summary' ) {
+        $self->basic_only_summary();
     } elsif ( $handler eq 'passthrough' ) {
         $self->passthrough();
     }
@@ -108,6 +110,60 @@ sub get_initial_data {
 
     warn( Dumper $r );
     print $cgi->header('application/json');
+    print to_json($r);
+}
+
+sub _enclose_in_tag {
+    my ( $string, $tag ) = @_;
+    return "<${tag}>" . "$string" . "</${tag}>" . "\n";
+}
+
+sub _to_html {
+    my ($value, $level) = @_;
+    $level++;
+    my $html = '';
+    my $ref = ref $value;
+
+    if ( $ref eq 'ARRAY' ) {
+        my @array = @$value;
+        if (scalar @array) {
+            my $arraystring = '';
+            for my $a (@array) {
+                $arraystring .= _to_html( $a, $level );
+            }
+            $html .= _enclose_in_tag( $arraystring, 'ul' ); 
+        }
+    } elsif ($ref eq 'HASH') {
+        my $hashstring = '';
+        for my $k ( sort keys %$value ) {
+            $html .= _enclose_in_tag( $k, 'li' );
+            $hashstring = _to_html($value->{$k}, $level);
+            $html .= _enclose_in_tag( $hashstring, 'ul' );
+        }
+    } else {
+        $html .= _enclose_in_tag( $value, 'li' );
+    }
+    return $html;
+}
+
+sub basic_only_summary {
+    my ( $self, $args ) = @_;
+
+    my $cgi = $self->{'cgi'};
+    my $params = $cgi->Vars;
+    my $r = from_json( $params->{userdata} );
+
+    my $data = [];
+
+    push ( @$data, $r->{support_data_array} );
+
+    $r->{support_data_as_html} = _to_html( $data, 0 );
+
+    warn("about to set \$r->{success}");
+    $r->{success} = 1;
+
+    print $cgi->header('application/json');
+    warn "passthrough: \$r" . Dumper($r);
     print to_json($r);
 }
 

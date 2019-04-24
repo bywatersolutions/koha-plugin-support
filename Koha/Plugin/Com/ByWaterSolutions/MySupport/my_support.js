@@ -158,10 +158,12 @@ function process_basic_only_request() {
     payload.support_data_array.push( { "request" : $("#basic_only_request_text").val() } );
 
     console.log( payload );
-    support_submit( payload, "passthrough", show_basic_only_summary );
+    support_submit( payload, "basic_only_summary", show_basic_only_summary );
 }
 
 function show_basic_only_summary( data ) {
+    // call function to build $('.summary_table')
+    $('#support_data_as_html').html(data.support_data_as_html);
     $('#basic_only_summary').show();
 
     payload = data;
