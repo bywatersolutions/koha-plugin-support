@@ -3,8 +3,9 @@
     display: none;
     position: absolute;
     position: fixed;
-    top: 0;
-    height: 96%;
+    bottom: 5px;
+    height: 30%;
+    width: 100% !important;
     z-index: 999999;
     
     /* Specify the width of your pageslide here */
@@ -62,3 +63,13 @@ div.reset {
 div.reset > label {
     padding: 0.2em 0.1em 0.1em 0.1em;
 }
+
+#basic_only_startpage {
+    display: flex;
+    flex-direction: column;
+    list-style-type: none;
+    max-width: 800px;
+}
+
+
+
