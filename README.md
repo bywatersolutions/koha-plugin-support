@@ -35,3 +35,56 @@ To set up the Koha plugin system you, (or your system administrator) must first 
 * Restart your webserver
 
 Once set up is complete you will need to alter your UseKohaPlugins system preference. On the Tools page you will see the Tools Plugins and on the Reports page you will see the Reports Plugins.
+
+# Restricting the use of the plugin to Superlibrarian
+
+To restrict the support plugin to superlibrarians only, Create a report using the following query
+
+    SELECT userid
+    FROM borrowers 
+    WHERE flags%2=1 
+    ORDER BY borrowernumber ASC
+
+Note the number of tne report -- we'll call that `XX`
+
+Change 
+
+    /* JS for Koha Support Plugin
+    This JS was added automatically by installing the Support plugin
+    Please do not modify */$.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js')/* End of JS for Koha Support Plugin */
+
+to
+
+    $(document).ready(function(){
+        var is_superlibrarian = 0;
+
+        $.getJSON(
+            "/cgi-bin/koha/svc/report?id=XX&annotated=1", function(data) {
+            $.each( data, function( index, value ) {
+                if( value.userid === $(".loggedinusername").html() ) {
+                    is_superlibrarian = 1;
+                }
+            } )
+
+            if( is_superlibrarian === 1 ) {
+
+    /* JS for Koha Support Plugin
+    This JS was added automatically by installing the Support plugin
+    Please do not modify */$.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js')/* End of JS for Koha Support Plugin */
+
+            }
+        });
+
+    });
+
+Unfortunately, this call is relatively slow. in 19.05 an higher, the html class `is_superlibrarian` is added on each page in the intranet if the logged in user is a superlibrarian, which allows us to simplify the code above to
+
+    if( $("is_superlibrarian") !== NULL ) {
+
+    /* JS for Koha Support Plugin
+    This JS was added automatically by installing the Support plugin
+    Please do not modify */$.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js')/* End of JS for Koha Support Plugin */
+
+    }
+
+This will not cause any perceivable delay.
