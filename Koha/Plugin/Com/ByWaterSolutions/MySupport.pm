@@ -277,8 +277,9 @@ sub process_support_request {
         to => $email_to,
         from => $r->{support_data}->{user}->{email},
         subject => $email_subject,
-        message => YAML::Dump( $data ),
+        message =>  _to_html( $data, 0 ),
         attachments => [
+            { filename => "support_data.yaml", type => "yaml", data => YAML::Dump( $data ) }
             { filename => "page.html", type => "html", data => $html }
         ],
         cgi => $cgi
@@ -287,7 +288,9 @@ sub process_support_request {
 
 my $boundary = "====" . time() . "====";
 my %content_config = (
-    message => qq{Content-Type: text/plain; charset="iso-8859-1"\n}
+    message => qq{Content-Type: text/html; charset="UTF-8" name="%s"\n}
+               . "Content-Transfer-Encoding: quoted-printable\n"
+    yaml => qq{Content-Type: application/x-yaml; charset="iso-8859-1"\n}
                . "Content-Transfer-Encoding: quoted-printable\n",
     html => qq{Content-Type: text/html; charset="UTF-8" name="%s"\n}
                . "Content-Transfer-Encoding: quoted-printable\n"
