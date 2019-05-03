@@ -4,7 +4,7 @@
     position: absolute;
     position: fixed;
     bottom: 5px;
-    height: 30%;
+    height: 35%;
     width: 100% !important;
     z-index: 999999;
     
@@ -64,12 +64,38 @@ div.reset > label {
     padding: 0.2em 0.1em 0.1em 0.1em;
 }
 
+#modal {
+    display: flex;
+    align-items: center;
+}
+
 #basic_only_startpage {
     display: flex;
     flex-direction: column;
     list-style-type: none;
-    max-width: 800px;
 }
+
+#basic_only_summary {
+    height: 150px;
+    overflow-y: visible;
+    overflow-x: hidden;
+}
+
+#basic_only_startpage, #basic_only_request, #basic_only_summary {
+    width: 75vw;
+}
+
+#basic_only_request_text {
+    width: 100%;
+}
+
+#my_support_cancel {
+    color: #fefbef;
+    font-weight: 600;
+    background-color: #ff4136;
+    padding: 1em;
+}
+
 
 
 
