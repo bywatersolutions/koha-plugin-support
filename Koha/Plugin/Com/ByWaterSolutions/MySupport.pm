@@ -289,7 +289,7 @@ sub process_support_request {
 my $boundary = "====" . time() . "====";
 my %content_config = (
     message => qq{Content-Type: text/html; charset="UTF-8" name="%s"\n}
-               . "Content-Transfer-Encoding: quoted-printable\n"
+               . "Content-Transfer-Encoding: quoted-printable\n",
     yaml => qq{Content-Type: application/x-yaml; charset="iso-8859-1"\n}
                . "Content-Transfer-Encoding: quoted-printable\n",
     html => qq{Content-Type: text/html; charset="UTF-8" name="%s"\n}
