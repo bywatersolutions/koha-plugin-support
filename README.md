@@ -77,7 +77,7 @@ to
 
     });
 
-Unfortunately, this call is relatively slow. in 19.05 an higher, the html class `is_superlibrarian` is added on each page in the intranet if the logged in user is a superlibrarian, which allows us to simplify the code above to
+Unfortunately, this call is relatively slow. In 19.05 or higher, the html class `is_superlibrarian` is added on each page in the intranet if the logged in user is a superlibrarian, which allows us to simplify the code above to
 
     if( $("is_superlibrarian") !== NULL ) {
 
