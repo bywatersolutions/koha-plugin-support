@@ -280,7 +280,7 @@ sub process_support_request {
         message =>  _to_html( $data, 0 ),
         attachments => [
             { filename => "support_data.yaml", type => "yaml", data => YAML::Dump( $data ) }
-          , { filename => "page.html", type => "html", data => $html }
+#          , { filename => "page.html", type => "html", data => $html }
         ],
         cgi => $cgi
     );
