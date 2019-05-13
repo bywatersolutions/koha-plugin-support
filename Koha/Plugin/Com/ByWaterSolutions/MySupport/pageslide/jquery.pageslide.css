@@ -4,8 +4,8 @@
     position: absolute;
     position: fixed;
     bottom: 5px;
-    height: 35%;
-    width: 100% !important;
+    height: 100%;
+    width: 30% !important;
     z-index: 999999;
     
     /* Specify the width of your pageslide here */
@@ -64,38 +64,42 @@ div.reset > label {
     padding: 0.2em 0.1em 0.1em 0.1em;
 }
 
-#modal {
-    display: flex;
-    align-items: center;
-}
-
-#basic_only_startpage {
-    display: flex;
-    flex-direction: column;
-    list-style-type: none;
-}
-
-#basic_only_summary {
-    height: 150px;
-    overflow-y: visible;
-    overflow-x: hidden;
-}
-
-#basic_only_startpage, #basic_only_request, #basic_only_summary {
-    width: 75vw;
-}
-
-#basic_only_request_text {
-    width: 100%;
-}
-
 #my_support_cancel {
     color: #fefbef;
     font-weight: 600;
     background-color: #ff4136;
     padding: 1em;
+    border: 1px solid transparent;
+    font-size: 14px;
+    line-height: 1.42857143;
+    border-radius: 4px;
+    margin-bottom: 1em;
+    text-align: center;
 }
 
+#basic_only_summary_submit {
+    color: #fefbef;
+    font-weight: 600;
+    background: #a6cf6c;
+    padding: 1em;
+}
 
+#basic_only_submit_container {
+    display: flex;
+    flex-direction: column;
+}
+
+#basic_only_startpage, #basic_only_request, #basic_only_summary {
+    height: 65vh;
+}
+
+#basic_only_request_text {
+    width: 100%;
+    height: 40vh;
+}
+
+#basic_only_summary {
+    overflow-x: hidden;
+}
 
 
