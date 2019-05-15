@@ -279,7 +279,7 @@ sub process_support_request {
         subject => $email_subject,
         message =>  _to_html( $data, 0 ),
         attachments => [
-            { filename => "support_data.yaml", type => "yaml", data => YAML::Dump( $data ) }
+            { filename => "support_data.yml", type => "text", data => YAML::Dump( $data ) }
 #          , { filename => "page.html", type => "html", data => $html }
         ],
         cgi => $cgi
