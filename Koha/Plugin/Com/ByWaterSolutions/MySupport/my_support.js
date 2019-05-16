@@ -1,6 +1,5 @@
 var payload;
 
-console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 1");
 function support_submit( userdata, sub, callback ) {
     $('.support').hide();
 
@@ -9,8 +8,6 @@ function support_submit( userdata, sub, callback ) {
     data.class = "Koha::Plugin::Com::ByWaterSolutions::MySupport";
     data.method = "tool";
     data.sub = sub;
-    console.log( "Support submit: ");
-    console.log( data );
 
     $.ajax({ 
         type: "POST",
@@ -22,7 +19,6 @@ function support_submit( userdata, sub, callback ) {
 
 }
 
-console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 2");
 function category_dispatch( key ) {
     var submittable = {
         'Circulation' : {
@@ -37,14 +33,12 @@ function category_dispatch( key ) {
     }
 }
 
-console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 3");
 $.getScript('/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery.pageslide.min.js', function() {
     $.get("/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/pageslide/jquery.pageslide.css", function(css){
         $("<style></style>").appendTo("head").html(css);
         $.get("/plugin/Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.html", function(html){
             $('body').append(html);
 
-console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4");
             // Get User and document URL.
             $('#my_support_link').click( function() {
                 $.pageslide({ href: '#modal', direction: "left", modal: true });
@@ -63,8 +57,6 @@ console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4
                 payload.support_data.url = document.URL;
 
                 support_submit( payload, "get_initial_data", show_startpage );
-                console.log( 'get_initiali_data payload: ' );
-                console.log( payload );
             });
 
             /**** BASIC ONLY WORK-FLOW ****/
@@ -98,7 +90,6 @@ console.log("Koha/Plugin/Com/ByWaterSolutions/MySupport/my_support.js got here 4
 });
 
 function show_startpage ( data ) {
-    console.log("inside show_startpage.");
     if( data.basic_only == 0) {
         $('#startpage').show();
         $('#my_support_name').val(data.support_data.user.userid);
@@ -122,8 +113,6 @@ function show_startpage ( data ) {
     }
     $('#page').html(data.page);
     payload = data;
-    console.log( 'show_startpage() payload: ' );
-    console.log( payload );
 }
 
 /* basic_only work flow */
@@ -132,7 +121,6 @@ function process_basic_only_startpage() {
     if (typeof borrowernumber != 'undefined') {
         borrower = borrowernumber;
     } else {
-        console.log("borrowernumber is undefined")
         borrower = '';
     }
 
@@ -142,7 +130,6 @@ function process_basic_only_startpage() {
     payload.support_data_array.push( { "user" : payload.support_data.user } );
     payload.borrower = borrower;
 
-    console.log( payload );
     support_submit( payload, "passthrough", show_basic_only_request );
 
 }
@@ -157,7 +144,6 @@ function process_basic_only_request() {
 
     payload.support_data_array.push( { "request" : $("#basic_only_request_text").val() } );
 
-    console.log( payload );
     support_submit( payload, "basic_only_summary", show_basic_only_summary );
 }
 
@@ -175,7 +161,6 @@ function process_basic_only_summary() {
         $.pageslide.close();
         $('#my_support_link').show();
     } else {
-        console.log( payload );
 
         payload.email_subject = $("#email_subject").val();
         //payload.html = $('html')[0].outerHTML;
@@ -193,7 +178,6 @@ function process_startpage() {
     if (typeof borrowernumber != 'undefined') {
         borrower = borrowernumber;
     } else {
-        console.log("borrowernumber is undefined")
         borrower = '';
     }
 
@@ -205,12 +189,8 @@ function process_startpage() {
     payload.category = category;
     payload.borrower = borrower;
 
-    console.log("Support catgory: " , category );
 
     var dispatch = category_dispatch( category );
-    console.log( "Dispatch sub: ", dispatch.sub, " callback: ", dispatch.callback );
-    console.log( 'process_startpage() payload: ' );
-    console.log( payload );
     support_submit( payload, dispatch.sub, dispatch.callback );
 
 }
@@ -223,7 +203,6 @@ function show_circulation ( data ) {
 }
 
 function process_circulation() {
-    console.log( "in process_circulation" );
 
     var circulation = [];
     circulation.push( { "cardnumber" : $("#circ_borrower").val() } );
@@ -239,12 +218,10 @@ function process_circulation() {
 
 function show_basic_info ( data ) {
     $('#basic_info').show();
-    console.log( 'show_basic_info() data.success : ' + data.success );
     payload = data;
 }
 
 function process_basic_info() {
-    console.log( "in process_basic_info" );
     var basic = [];
     basic.push( { "browser_cache_cleared": $("#browser_cache").val() } );
     basic.push( { "expected_results": $("#expected").val() } );
@@ -263,7 +240,6 @@ function show_basic_info_when( data ) {
 }
 
 function process_basic_info_when() {
-    console.log( "in process_basic_info_when" );
     var when = {};
     when.issue_frequency = $("#how_often").val();
     when.issue_when = $("#when").val();
@@ -279,8 +255,6 @@ function show_basic_info_changes( data ) {
 }
 
 function process_basic_info_changes() {
-    console.log( "in process_basic_info_changes" );
-
     var changes = [];
     payload.support_data.changes = {};
     changes.push( { "recent_changes" : $("#recent_changes").val() } );
@@ -298,7 +272,6 @@ function show_basic_info_finish( data ) {
 }
 
 function process_basic_info_finish() {
-    console.log( "in process_basic_info_finish" );
     payload.support_data.steps_to_re_create = $("#steps_to_re_create").val();
     payload.support_data.tried_other_browser = $("#tried_other_browser").val();
     payload.support_data_array.push( { "steps_to_re_create" : $("#steps_to_re_create").val() } );
