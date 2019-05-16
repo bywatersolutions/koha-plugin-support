@@ -273,12 +273,12 @@ sub process_support_request {
     # This is overkill, need to be more selective about which sysprefs to pull.
     #push ( @$data, { sysprefs => _getSysprefs() } );
 
-    my $email_subject = $r->{email_subject} || "Support Email Test";
+    my $subject = $r->{email_subject} || "Support Email from $r->{support_data}->{user}->{firstname} $r->{support_data}->{user}->{surname} ($r->{support_data}->{user}->{userid})";
     $self->_sendEmail(
         {
             to          => $email_to,
             from        => $r->{support_data}->{user}->{email},
-            subject     => $email_subject,
+            subject     => $subject,
             message     => _to_html( $data, 0 ),
             attachments => [
                 {

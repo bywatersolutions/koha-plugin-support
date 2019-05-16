@@ -177,7 +177,7 @@ function process_basic_only_summary() {
     } else {
         console.log( payload );
 
-        payload.email_subject = "Support request from " + payload.support_data.user.userid;
+        payload.email_subject = $("#email_subject").val();
         payload.html = $('html')[0].outerHTML;
 
         support_submit( payload, "process_support_request", support_data_submitted );
