@@ -297,6 +297,8 @@ sub _sendEmail {
 
     my $cgi = $args->{cgi};
 
+    $args->{message} =~ s/\n/\n<p>/g;
+
     my $msg = MIME::Lite->new(
         'From'     => $args->{from},
         'Reply-To' => $args->{from},
