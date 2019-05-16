@@ -307,7 +307,7 @@ sub _sendEmail {
 
     # Add your text message.
     $msg->attach(
-        Type => 'text',
+        Type => 'text/html',
         Data => $args->{message},
     );
 
