@@ -1,7 +1,7 @@
 {
   "name": "koha-plugin-support",
-  "version": "2.1.36",
-  "previous_version": "2.1.35",
+  "version": "2.1.37",
+  "previous_version": "2.1.36",
   "description": "Koha Support Plugin",
   "devDependencies": {
     "gulp": "^3.9.1",
