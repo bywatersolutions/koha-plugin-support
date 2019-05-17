@@ -22,37 +22,47 @@ Ensure the plugins directory exists
 For git installs: /home/koha/koha-dev/var/lib/plugins
 
 Ensure the plugins directory is writable by Apache
-sudo chgrp www-data /path/to/plugins
-sudo chmod g+w /path/to/plugins
+
+    sudo chgrp www-data /path/to/plugins
+    sudo chmod g+w /path/to/plugins
 
 Edit the koha-conf.xml file
 Add or edit the pluginsdir stanza ( in the <config> section )
-<pluginsdir>/path/to/plugins</pluginsdir>
+
+    <pluginsdir>/path/to/plugins</pluginsdir>
+
 Add or edit the enable_plugins stanza ( also in the <config> section )
-<enable_plugins>1</enable_plugins>
+
+    <enable_plugins>1</enable_plugins>
 
 Add the following lines to your apache2 configuration under the Intranet section file, which can be found at at `/etc/apache2/sites-enabled/koha-SITE` (`SITE` matching your koha instance name):
 
-  `<Directory "/var/lib/koha/SITE/plugins">
-  `    Require all granted
-  `</Directory>
-  ` Alias /plugin "/var/lib/koha/SITE/plugins/"
+    <Directory "/var/lib/koha/SITE/plugins">
+    Require all granted
+    </Directory>
+    Alias /plugin "/var/lib/koha/SITE/plugins/"
 
 The plugin will construct this stanza for you. If Plugins are already enabled just install the plugin and it will construct the stanza for you to copy paste into your apache2 configuration file.
 
-With these changes complete Restart or Reload Apache
-  `sudo service apache2 reload`
-If running, Restart Memcached
-  `sudo service memcached restart`
+With these changes complete Restart or Reload Apache:
 
-Ensure the system preference `UseKohaPlugins` is enabled
+    sudo service apache2 reload
 
-Download the latest release of the plugin to your computer (the file will have a .kpz extension).
-Browse to Home › Administrations › Manage Plugins and install the plugin.
+If running, Restart Memcache:
+
+    sudo service memcached restart
+
+Ensure the system preference `UseKohaPlugins` is enabled.
+
+Download the latest release of the plugin to your computer (the file will have a .kpz extension). Browse to Home › Administrations › Manage Plugins to upload and install the plugin.
 
 # Configuration
 
-With the Support Plugin installed it is time to configure it! As stated previously the plugin will construct the apache stanza for you and that will be the first thing you see on the Configure page. Bellow that you need to tell the plugin who to email when a support request is created. This can be a person, group email alias, or the email address of a ticketing system that creates tickets via email. Next there are radio buttons for different Cards, but as of v 2.1.40 only one type of card is in production. Finally, it will automatically updated the IntranetUserJS system preference with the JS needed to run the plugin after you hit "Save".
+With the Support Plugin installed it is time to configure it! As stated previously the plugin will construct the apache stanza for you and that will be the first thing you see on the Configure page. Bellow that you need to tell the plugin who to email when a support request is created. This can be a person, group email alias, or the email address of a ticketing system that creates tickets via email. 
+
+Next there are radio buttons for different Cards, but as of v 2.1.40 only one type of card is in production. 
+
+Finally, it will automatically updated the IntranetUserJS system preference with the JS needed to run the plugin after you hit "Save".
 
 As a general note: this plugin will run faster on Koha sites running Plack. 
 
