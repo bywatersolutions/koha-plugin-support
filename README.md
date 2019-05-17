@@ -4,50 +4,70 @@ Koha's Plugin System (available in Koha 3.12+) allows for you to add additional 
 
 # Description
 
-This plugin is meant to provide an easy way of reporting support issues in Koha. Once installed, it is accessable via a button in the lower right hand corner of the screen. Clicking on the button opens a slide-in panel which allows the user to fill in support information. 
+This plugin provide an easy way of reporting support issues in Koha. Once installed, it is accessible via a button in the lower right hand corner of the screen. Clicking button opens a panel which allows the user to compose a message to a system librarian or ticketing system.
 
-Furture development for this plugin will achieve the following objectives:
+Future development for this plugin will achieve the following objectives:
 
-1) The plugin will context-sensitive, and will pull support category information based on the URL of the page the telempath is opened on. 
-2) Telempath runs off of "Cards". There is a "Basic" Support Request Card which is the template for the fancier cards to come. This Basic Card is static and can be used by anyone downloading and installing the plugin.
-3) Telempath will integrate with other open source resources, such as ticketing systems and customer relations managements systems, to make submission of Koha support requests easier.
-4) Telempath will offer suggestions to the Koha end user based on the URL of the page, module selected, or the keywords of the support inquery. Already the Koha community has resources to link Koha users to the manual in Koha. There are RSS feeds and listservs for recently created bugs. 
-
-Adding configuration options that highlight these extant resources to the end user in their time of need, as well as facilitating the easiest submission of a problem or request with relevant metadata is the ultimate goal of the development. 
+* The plugin will context-sensitive, and will pull support category information based on the URL of the page the it is opened on.
+* The Support Plugin sends a YAML file with all the message's details. This allows for integration with other open source resources, such as ticketing systems and customer relations managements systems.
+* The Support Plugin runs off of "Cards". There is a "Basic" Support Request Card which is the template for the fancier cards to come. This Basic Card is static and can be used by anyone downloading and installing the plugin.
+* The Support Plugin will offer suggestions to the Koha end user based on the URL of the page, module selected, or the keywords of the support inquiry. Adding options that highlight resources like the Koha Manual, Newly Created Bugs to the end user in their time of need, as well as facilitating the easiest submission of a problem or request with relevant metadata is the goal of the plugin.
 
 # Downloading
 
 From the [release page](https://github.com/bywatersolutions/koha-plugin-support/releases) you can download the relevant \*.kpz file
 
-# Installing
+# Installing and Setup
+Ensure the plugins directory exists
+For git installs: /home/koha/koha-dev/var/lib/plugins
 
-To set up the Koha plugin system you, (or your system administrator) must first make some changes to your install.
+Ensure the plugins directory is writable by Apache
+sudo chgrp www-data /path/to/plugins
+sudo chmod g+w /path/to/plugins
 
-* Change `<enable_plugins>0<enable_plugins>` to `<enable_plugins>1</enable_plugins>` in your koha-conf.xml file
-* Confirm that the path to `<pluginsdir>` exists, is correct, and is writable by the web server
-* Edit `/etc/apache2/sites-enabled/koha-SITE` (`SITE` matching your koha instance name), add the following lines:
+Edit the koha-conf.xml file
+Add or edit the pluginsdir stanza ( in the <config> section )
+<pluginsdir>/path/to/plugins</pluginsdir>
+Add or edit the enable_plugins stanza ( also in the <config> section )
+<enable_plugins>1</enable_plugins>
 
-    <Directory "/var/lib/koha/SITE/plugins">
-        Require all granted
-    </Directory>
-    Alias /plugin "/var/lib/koha/SITE/plugins/"
+Add the following lines to your apache2 configuration under the Intranet section file, which can be found at at `/etc/apache2/sites-enabled/koha-SITE` (`SITE` matching your koha instance name):
 
-* Restart your webserver
+  `<Directory "/var/lib/koha/SITE/plugins">
+  `    Require all granted
+  `</Directory>
+  ` Alias /plugin "/var/lib/koha/SITE/plugins/"
 
-Once set up is complete you will need to alter your UseKohaPlugins system preference. On the Tools page you will see the Tools Plugins and on the Reports page you will see the Reports Plugins.
+The plugin will construct this stanza for you. If Plugins are already enabled just install the plugin and it will construct the stanza for you to copy paste into your apache2 configuration file.
 
-# Restricting the use of the plugin to Superlibrarian
+With these changes complete Restart or Reload Apache
+  `sudo service apache2 reload`
+If running, Restart Memcached
+  `sudo service memcached restart`
+
+Ensure the system preference `UseKohaPlugins` is enabled
+
+Download the latest release of the plugin to your computer (the file will have a .kpz extension).
+Browse to Home › Administrations › Manage Plugins and install the plugin.
+
+# Configuration
+
+With the Support Plugin installed it is time to configure it! As stated previously the plugin will construct the apache stanza for you and that will be the first thing you see on the Configure page. Bellow that you need to tell the plugin who to email when a support request is created. This can be a person, group email alias, or the email address of a ticketing system that creates tickets via email. Next there are radio buttons for different Cards, but as of v 2.1.40 only one type of card is in production. Finally, it will automatically updated the IntranetUserJS system preference with the JS needed to run the plugin after you hit "Save".
+
+As a general note: this plugin will run faster on Koha sites running Plack. 
+
+# EXPERIMENTAL - Restricting the use of the plugin to Superlibrarian
 
 To restrict the support plugin to superlibrarians only, Create a report using the following query
 
     SELECT userid
-    FROM borrowers 
-    WHERE flags%2=1 
+    FROM borrowers
+    WHERE flags%2=1
     ORDER BY borrowernumber ASC
 
-Note the number of tne report -- we'll call that `XX`
+Note report's ID number -- we'll call that `XX`.
 
-Change 
+Change the standard JS generated by the plugin from: 
 
     /* JS for Koha Support Plugin
     This JS was added automatically by installing the Support plugin
