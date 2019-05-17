@@ -161,12 +161,13 @@ function process_basic_only_summary() {
         $.pageslide.close();
         $('#my_support_link').show();
     } else {
-
         payload.email_subject = $("#email_subject").val();
         //payload.html = $('html')[0].outerHTML;
 
         support_submit( payload, "process_support_request", support_data_submitted );
     }
+
+    $(".support-plugin").val(""); // Clear the form values
 }
 /* end of basic_only work flow */
 
