@@ -44,6 +44,10 @@ Add the following lines to your apache2 configuration under the Intranet section
 
 The plugin will construct this stanza for you. If Plugins are already enabled just install the plugin and it will construct the stanza for you to copy paste into your apache2 configuration file.
 
+Ensure Carp::Always is installed
+	
+    sudo apt-get install libcarp-always-perl
+
 With these changes complete Restart or Reload Apache:
 
     sudo service apache2 reload
