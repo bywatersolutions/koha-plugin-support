@@ -1,5 +1,4 @@
 package Koha::Plugin::Com::ByWaterSolutions::MySupport;
-use Carp::Always;
 
 use Modern::Perl;
 
